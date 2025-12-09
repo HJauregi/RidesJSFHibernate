@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:component>
+	<f:view>
+		<h:head>
+			<title>RidesJSF</title>
+
+			<style>
+body {
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	background-color: #eef2f5;
+	margin: 0;
+	padding: 0;
+}
+
+h3 {
+	text-align: center;
+	margin-bottom: 25px;
+	color: #333;
+	font-weight: 600;
+}
+
+#mainTable {
+	margin: 0 auto;
+	width: 850px;
+	background-color: #fff;
+	padding: 20px;
+	border-radius: 12px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+#leftCol {
+	vertical-align: top;
+	padding-right: 25px;
+}
+
+#rightCol {
+	vertical-align: top;
+}
+
+table.formTable td {
+	padding: 10px 6px;
+}
+
+label {
+	font-size: 15px;
+	font-weight: 500;
+	color: #555;
+}
+
+input[type="text"], h:inputText {
+	width: 190px;
+	height: 30px;
+	padding: 5px 8px;
+	border-radius: 6px;
+	border: 1px solid #bbb;
+	font-size: 14px;
+	transition: all 0.2s ease-in-out;
+}
+
+input[type="text"]:focus {
+	border-color: #4a90e2;
+	box-shadow: 0 0 6px rgba(74, 144, 226, 0.3);
+	outline: none;
+}
+
+.ui-datepicker-inline {
+	border: 1px solid #ccc !important;
+	border-radius: 8px !important;
+	background: #fff !important;
+	padding: 12px !important;
+}
+
+.button-section {
+	text-align: center;
+	margin-top: 25px;
+	margin-bottom: 20px;
+}
+
+/* -------- BOTONES AZULES -------- */
+.button-section input, .button-section h\:commandButton {
+	background-color: #007BFF; /* Azul principal */
+	color: #fff;
+	border: none;
+	padding: 10px 24px;
+	border-radius: 8px;
+	cursor: pointer;
+	font-weight: 500;
+	margin: 0 12px;
+	transition: all 0.25s ease-in-out;
+}
+
+.button-section input:hover, .button-section h\:commandButton:hover {
+	background-color: #0069d9; /* Azul más oscuro hover */
+}
+
+#mezuak {
+	text-align: center;
+	margin-top: 15px;
+	color: #1a73e8;
+	font-weight: 500;
+}
+</style>
+		</h:head>
+
+		<h:body>
+
+			<h:form id="nireForm">
+				<h3>Create Ride interface</h3>
+
+				<h:outputText value="Driver email: #{rides.driverEmail}"
+					style="display:block; text-align:center; margin-bottom:15px; color:#333;" />
+
+				<table id="mainTable">
+					<tr>
+						<td id="leftCol">
+							<table class="formTable">
+								<tr>
+									<td><label>From:</label></td>
+									<td><h:inputText id="from" value="#{create.from}">
+											<f:validateRegex
+												pattern="([A-Z][a-z]+(-[A-Z][a-z]+)?)( [A-Z][a-z]+(-[A-Z][a-z]+)?)*" />
+										</h:inputText></td>
+								</tr>
+								<tr>
+									<td></td>
+									<td><h:message for="from" style="color:red" /></td>
+								</tr>
+
+								<tr>
+									<td><label>To:</label></td>
+									<td><h:inputText id="to" value="#{create.to}">
+											<f:validateRegex
+												pattern="([A-Z][a-z]+(-[A-Z][a-z]+)?)( [A-Z][a-z]+(-[A-Z][a-z]+)?)*" />
+										</h:inputText></td>
+								</tr>
+								<tr>
+									<td></td>
+									<td><h:message for="to" style="color:red" /></td>
+								</tr>
+
+								<tr>
+									<td><label>Seats:</label></td>
+									<td><h:inputText id="seats" value="#{create.seats}" /></td>
+								</tr>
+								<tr>
+									<td></td>
+									<td><h:message for="seats" style="color:red" /></td>
+								</tr>
+
+								<tr>
+									<td><label>Price:</label></td>
+									<td><h:inputText id="price" value="#{create.price}" /></td>
+								</tr>
+								<tr>
+									<td></td>
+									<td><h:message for="price" style="color:red" /></td>
+								</tr>
+
+							</table>
+						</td>
+
+						<td id="rightCol">
+							<div style="margin-bottom: 10px;">
+								<label style="font-size: 16px; font-weight: 500;">Date:</label>
+							</div> <p:calendar id="data" value="#{create.data}" navigator="false"
+								mode="inline">
+								<p:ajax event="dateSelect" listener="#{create.onDateSelect}"
+									update="mezuak" />
+							</p:calendar>
+						</td>
+					</tr>
+				</table>
+
+				<div class="button-section">
+					<h:commandButton value="Create Ride" action="#{create.createRide}" />
+					<h:commandButton value="Close" action="close" />
+				</div>
+
+				<h:messages id="mezuak" style="color:#1a73e8" />
+
+			</h:form>
+
+		</h:body>
+	</f:view>
+</ui:component>
+</html>

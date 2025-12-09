@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>Query Rides</title>
+
+	<style>
+body {
+	font-family: Arial, sans-serif;
+	background-color: #f4f4f4;
+}
+
+h3 {
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+#mainTable {
+	margin: 0 auto;
+	width: 820px;
+	background-color: #fff;
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#leftCol {
+	vertical-align: top;
+	padding-right: 20px;
+}
+
+#rightCol {
+	vertical-align: top;
+}
+
+table.formTable td {
+	padding: 8px 4px;
+}
+
+label {
+	font-size: 15px;
+	font-weight: 500;
+	color: #444;
+}
+
+.ui-selectonemenu {
+	width: 200px !important;
+}
+
+.ui-selectonemenu .ui-selectonemenu-trigger {
+	width: 2em !important;
+}
+
+.ui-datepicker-inline {
+	border: 1px solid #ccc !important;
+	border-radius: 8px !important;
+	background: #fff !important;
+	padding: 10px !important;
+}
+
+.ridesTableWrapper {
+	margin: 20px auto;
+	max-width: 1000px;
+	background: #fff;
+	border-radius: 10px;
+	padding: 15px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.ridesTableWrapper .ui-datatable th {
+	background-color: #f0f0f0;
+	color: #333;
+	font-weight: 600;
+}
+
+.button-section {
+	text-align: center;
+	margin-top: 20px;
+}
+
+.custom-btn {
+    background-color: #007BFF !important;
+    color: white !important;
+    border: none !important;
+    padding: 10px 24px !important;
+    font-size: 15px !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    transition: 0.3s;
+    margin: 0 12px;
+}
+
+.custom-btn:hover {
+    background-color: #0069d9 !important;
+}
+
+.custom-btn-secondary {
+	background-color: #007BFF !important;
+	color: white !important;
+	border: none !important;
+	padding: 10px 24px !important;
+	font-size: 15px !important;
+	border-radius: 8px !important;
+	cursor: pointer !important;
+	transition: 0.3s;
+	margin: 0 12px;
+}
+
+.custom-btn-secondary:hover {
+	background-color: #0069d9 !important;
+}
+
+#mezuak {
+	text-align: center;
+	margin-top: 10px;
+	color: blue;
+}
+</style>
+</h:head>
+
+<h:body>
+	<h:form id="queryForm">
+		<h3>Query Rides</h3>
+
+		<table id="mainTable">
+			<tr>
+				<td id="leftCol">
+					<table class="formTable">
+						<tr>
+							<td><label for="departCity">Depart City:</label></td>
+							<td><p:selectOneMenu id="departCity"
+									value="#{queryRides.departCity}" appendTo="@(body)">
+									<f:selectItem itemLabel="Select a city" itemValue=""
+										noSelectionOption="true" />
+									<f:selectItems value="#{queryRides.departCities}" />
+									<p:ajax listener="#{queryRides.onDepartCityChange}"
+										update="arrivalCity ridesTable mezuak" process="@this" />
+								</p:selectOneMenu></td>
+						</tr>
+
+						<tr>
+							<td><label for="arrivalCity">Arrival City:</label></td>
+							<td><p:selectOneMenu id="arrivalCity"
+									value="#{queryRides.arrivalCity}"
+									disabled="#{empty queryRides.departCity}" appendTo="@(body)">
+									<f:selectItem itemLabel="Select destination" itemValue=""
+										noSelectionOption="true" />
+									<f:selectItems value="#{queryRides.arrivalCities}" />
+									<p:ajax listener="#{queryRides.onDateSelect}"
+										update="ridesTable mezuak" process="@this" />
+								</p:selectOneMenu></td>
+						</tr>
+					</table>
+				</td>
+
+				<td id="rightCol">
+					<div style="margin-bottom: 8px;">
+						<label style="font-size: 16px; font-weight: 500;">Ride
+							Date:</label>
+					</div> <p:calendar id="rideDate" value="#{queryRides.rideDate}"
+						pattern="dd/MM/yyyy" navigator="true" mode="inline">
+						<p:ajax event="dateSelect" listener="#{queryRides.onDateSelect}"
+							update=":queryForm:ridesTable :queryForm:mezuak" process="@this" />
+					</p:calendar>
+				</td>
+			</tr>
+		</table>
+
+		<div class="ridesTableWrapper">
+			<p:dataTable id="ridesTable" value="#{queryRides.rides}" var="ride"
+				emptyMessage="No rides available" paginator="true" rows="10">
+				<p:column headerText="Driver">#{ride.driver.email}</p:column>
+				<p:column headerText="From">#{ride.from}</p:column>
+				<p:column headerText="To">#{ride.to}</p:column>
+				<p:column headerText="Seats">#{ride.nPlaces}</p:column>
+				<p:column headerText="Price">#{ride.price}</p:column>
+				<p:column headerText="Date">
+					<h:outputText value="#{ride.date}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+			</p:dataTable>
+		</div>
+
+		<div class="button-section">
+			<h:commandButton value="Close" action="close" styleClass="custom-btn" />
+		</div>
+
+		<h:messages id="mezuak" />
+	</h:form>
+</h:body>
+
+</html>

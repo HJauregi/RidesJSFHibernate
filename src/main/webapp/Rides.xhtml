@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<f:view>
+	<h:head>
+		<title>RidesJSF</title>
+		<style>
+.panel {
+	width: 520px;
+	margin: 40px auto 0 auto;
+	border: 1px solid #999;
+	border-radius: 10px;
+	padding: 25px;
+	text-align: center;
+	background: #f4f4f4;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.section {
+	background: #dce6f7;
+	margin: 15px 0;
+	padding: 25px;
+	border-radius: 4px;
+}
+
+.section .ui-button, .section input[type="submit"], .section input[type="button"]
+	{
+	font-size: 18px; /* tamaño de letra más grande */
+	padding: 15px 30px; /* más espacio dentro del botón */
+	width: 100%; /* ancho del botón */
+}
+
+.lang {
+	margin-top: 25px;
+}
+</style>
+	</h:head>
+
+	<h:body>
+		<h:form id="nireForm">
+
+			<div class="panel">
+
+				<h2>Select Option</h2>
+
+				<div class="section">
+					<h:commandButton value="Create Ride" action="#{rides.createRides}" />
+					<f:param name="email" value="#{rides.getDriverEmail}" />
+
+				</div>
+
+				<div class="section">
+					<h:commandButton value="Query Rides" action="#{rides.queryRides}" />
+				</div>
+
+				<div class="lang">
+					<h:selectOneRadio value="#{rides.language}">
+						<f:selectItem itemValue="eu" itemLabel="Euskara" />
+						<f:selectItem itemValue="es" itemLabel="Castellano" />
+						<f:selectItem itemValue="en" itemLabel="English" />
+					</h:selectOneRadio>
+				</div>
+
+				<h:messages id="mezuak" style="color:blue" />
+
+			</div>
+
+		</h:form>
+	</h:body>
+
+</f:view>
+
+</html>
