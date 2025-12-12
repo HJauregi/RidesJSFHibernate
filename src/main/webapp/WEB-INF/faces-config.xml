@@ -14,6 +14,22 @@ https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_3_0.xsd"
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
+		<display-name>Rides.xhtml</display-name>
+		<from-view-id>/Rides.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>hirikoBidaiak</from-outcome>
+			<to-view-id>/HirikoBidaiak.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<display-name>HirikoBidaiak.xhtml</display-name>
+		<from-view-id>/HirikoBidaiak.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>bidaiakErakutsi</from-outcome>
+			<to-view-id>/BidaiakErakutsi.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
 		<from-view-id>/Login.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>driver</from-outcome>

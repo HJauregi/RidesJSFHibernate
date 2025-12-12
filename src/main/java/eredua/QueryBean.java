@@ -25,6 +25,10 @@ public class QueryBean implements Serializable {
 	private List<String> departCities;
 	private List<String> arrivalCities;
 	private List<Ride> ridesList;
+	private List<Ride> allRides;
+
+	
+	private String selectedDeparting;
 
 	private boolean searchPerformed;
 
@@ -155,5 +159,21 @@ public class QueryBean implements Serializable {
 		if (rideDate == null)
 			return "";
 		return new SimpleDateFormat("MMMM dd, yyyy").format(rideDate);
+	}
+	
+	
+	
+	public void onDEpartCitySelect() {
+		searchPerformed = false;
+
+		if (departCity != null && !departCity.isEmpty()) {
+			System.out.println("=== BIDAI GUZTIAK KARGATZEN ===");
+			System.out.println("Irteera hiria: " + departCity);
+			allRides = FacadeBean.getBusinessLogic().getAllRides(departCity);
+			System.out.println("Bidaiak aurkituta: " + allRides.size());
+			System.out.println("=================================");
+		} else {
+			arrivalCities = new ArrayList<>();
+		}
 	}
 }

@@ -102,6 +102,15 @@ public class BLFacadeImplementation implements BLFacade {
 	    dbManager.close();
 	}
 	
+	
+	@Override
+	public List<Ride> getAllRides(String from){
+		dbManager.open();
+		List<Ride> rides = dbManager.getAllRides(from);
+		dbManager.close();
+		return rides;
+	}
+	
 	/*
 	@Override
 	public void dropDB() {

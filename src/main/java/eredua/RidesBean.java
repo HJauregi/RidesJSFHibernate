@@ -39,5 +39,9 @@ public class RidesBean {
 		FacadeBean.getBusinessLogic().dropDB();
 	}
 	*/
+	
+	public String hirikoBidaiak() {
+		return "hirikoBidaiak";
+	}
 
 }

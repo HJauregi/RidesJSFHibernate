@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<f:view>
+	<h:head>
+		<title>Hiriko Bidiaka</title>
+		<h:outputStylesheet name="css/styles.css" />
+	</h:head>
+
+	<h:body>
+		<h:form id="menuForm">
+
+			<div class="panel">
+
+				<h2>Hiriko Bidaiak</h2>
+
+				<p:selectOneMenu id="departCity" value="#{queryRides.departCity}"
+					appendTo="@(body)">
+					<f:selectItem itemLabel="Select a city" itemValue=""
+						noSelectionOption="true" />
+					<f:selectItems value="#{queryRides.departCities}" />
+				</p:selectOneMenu>
+
+				<div class="button-section">
+					<h:commandButton value="BIDAI GUZTIAK ERAKUTSI" action="bidaiakErakutsi"  />
+				</div>
+				<h:messages id="messages" style="color:red; margin-top: 15px;" />
+
+			</div>
+
+		</h:form>
+	</h:body>
+
+</f:view>
+</html>
+

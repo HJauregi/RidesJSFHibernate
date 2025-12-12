@@ -188,6 +188,13 @@ public class HibernateDataAccess {
 		return db.find(Driver.class, email);
 	}
 	
+	
+	public List<Ride> getAllRides(String from){
+		return db.createQuery(
+				"SELECT r FROM Ride r WHERE r.departing=:departing AND r.arrival=:arrival AND r.date=:rideDate",
+				Ride.class).setParameter("departing", departing).setParameter("arrival", arrival)
+				.setParameter("rideDate", rideDate).getResultList();
+	}
 	/*
 	public void dropDB() {
 	    try {

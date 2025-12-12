@@ -77,6 +77,7 @@ public interface BLFacade  {
     
     public void close();
     
+    public List<Ride> getAllRides(String from);
     
     //public void dropDB();
     
