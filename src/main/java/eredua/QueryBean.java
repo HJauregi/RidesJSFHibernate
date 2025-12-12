@@ -28,22 +28,22 @@ public class QueryBean implements Serializable {
 
 	private boolean searchPerformed;
 
+	// Bean hasieratzen denean irteera-hiriak kargatu
 	@PostConstruct
 	public void init() {
-		System.out.println("=== QueryBean hasieratzen ===");
-		
-		// Hasieratu zerrendak
+		System.out.println("=== QUERYBEAN HASIERATZEN ===");
+
 		departCities = new ArrayList<>();
 		arrivalCities = new ArrayList<>();
 		ridesList = new ArrayList<>();
 		searchPerformed = false;
-		
-		// Kargatu irteera-hiriak
+
 		try {
 			departCities = FacadeBean.getBusinessLogic().getDepartCities();
 			System.out.println("Irteera-hiriak kargatuta: " + departCities.size());
+			System.out.println("============================");
 		} catch (Exception e) {
-			System.err.println("Errorea irteera-hiriak kargatzean: " + e.getMessage());
+			System.err.println("ERROREA: Irteera-hiriak kargatzean");
 			e.printStackTrace();
 		}
 	}
@@ -89,59 +89,68 @@ public class QueryBean implements Serializable {
 		return searchPerformed;
 	}
 
-	// Irteera hiria aldatzean helmuga-hiria lortzeko metodoa
+	// Irteera-hiria aldatzean helmuga-hiriak kargatu
 	public void onDepartCityChange() {
 		arrivalCity = null;
 		ridesList = new ArrayList<>();
 		searchPerformed = false;
 
 		if (departCity != null && !departCity.isEmpty()) {
+			System.out.println("=== HELMUGA-HIRIAK KARGATZEN ===");
+			System.out.println("Irteera hiria: " + departCity);
 			arrivalCities = FacadeBean.getBusinessLogic().getDestinationCities(departCity);
+			System.out.println("Helmuga-hiriak aurkituta: " + arrivalCities.size());
+			System.out.println("=================================");
 		} else {
 			arrivalCities = new ArrayList<>();
 		}
 	}
 
-	// Data hautatzean exekutatuko den metodoa datu horietako rides-ak lortzeko
+	// Data hautatzean bidaiak bilatu
 	public void onDateSelect() {
 		searchRides();
 	}
 
-	// Bidaien bilaketa egiteko metodoa
+	// Bidaiak bilatu hautatutako parametroekin
 	public void searchRides() {
-		if (departCity != null && !departCity.isEmpty() && 
-		    arrivalCity != null && !arrivalCity.isEmpty() && 
+		if (departCity != null && !departCity.isEmpty() &&
+		    arrivalCity != null && !arrivalCity.isEmpty() &&
 		    rideDate != null) {
 
 			rideDate = clearTime(rideDate);
+
+			System.out.println("=== BIDAIAK BILATZEN ===");
+			System.out.println("Nondik: " + departCity);
+			System.out.println("Nora: " + arrivalCity);
+			System.out.println("Data: " + new SimpleDateFormat("yyyy-MM-dd").format(rideDate));
 
 			ridesList = FacadeBean.getBusinessLogic().getRides(departCity, arrivalCity, rideDate);
 			if (ridesList == null)
 				ridesList = new ArrayList<>();
 
 			searchPerformed = true;
-			
-			System.out.println("Bilaketa eginda: " + departCity + " → " + arrivalCity + 
-			                   " (" + rideDate + ") - " + ridesList.size() + " bidaia aurkitu");
+
+			System.out.println("Emaitzak: " + ridesList.size() + " bidaia aurkitu");
+			System.out.println("========================");
 		}
 	}
 
-	// Dataetik ordu, minutu eta segundoak garbitzeko metodoa
+	// Datatik ordua kendu (ordu, minutu eta segundoak 0-ra jarri)
 	public Date clearTime(Date date) {
 		if (date == null)
 			return null;
-		
+
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
 		cal.set(Calendar.HOUR_OF_DAY, 0);
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.MILLISECOND, 0);
-		
+
 		return cal.getTime();
 	}
 
-	// Hautatutako data formateatzeko metodoa
+	// Hautatutako data formatu goxoan itzuli
 	public String getSelectedDateFormatted() {
 		if (rideDate == null)
 			return "";

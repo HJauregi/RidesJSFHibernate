@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<f:view>
+	<h:head>
+		<title>Login</title>
+		<h:outputStylesheet name="css/styles.css" />
+	</h:head>
+
+	<h:body>
+		<h:form id="loginForm">
+
+			<div class="panel">
+
+				<h2>Login</h2>
+
+				<div class="section">
+
+					<div class="form-group">
+						<label for="email">Email:</label>
+						<h:inputText id="email" value="#{credentials.email}"
+							required="true" />
+					</div>
+
+					<div class="form-group">
+						<label for="password">Pasahitza:</label>
+						<h:inputSecret id="password" value="#{credentials.password}"
+							required="true" />
+					</div>
+
+					<h:commandButton value="Login" action="#{credentials.login}" />
+
+				</div>
+
+				<div class="button-section">
+					<h:commandButton value="Close" action="close" immediate="true" />
+				</div>
+				<h:messages id="messages" style="color:red; margin-top: 15px;" />
+
+			</div>
+
+		</h:form>
+	</h:body>
+
+</f:view>
+
+</html>

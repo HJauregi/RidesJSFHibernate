@@ -1,0 +1,215 @@
+body {
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	background-color: #eef2f5;
+	margin: 0;
+	padding: 0;
+}
+
+h2, h3 {
+	text-align: center;
+	margin-bottom: 25px;
+	color: #333;
+	font-weight: 600;
+}
+
+h2 {
+	font-size: 28px;
+}
+
+h3 {
+	font-size: 24px;
+}
+
+/* Paneles generales */
+.panel {
+	width: 520px;
+	margin: 40px auto 0 auto;
+	border: 1px solid #999;
+	border-radius: 12px;
+	padding: 35px;
+	text-align: center;
+	background: #fff;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.section {
+	background: #dce6f7;
+	margin: 15px 0;
+	padding: 25px;
+	border-radius: 8px;
+}
+
+/* Formularios */
+.form-group {
+	margin: 15px 0;
+	text-align: left;
+}
+
+.form-group label {
+	display: block;
+	margin-bottom: 5px;
+	font-weight: 500;
+	color: #555;
+}
+
+.form-group input[type="text"], 
+.form-group input[type="password"] {
+	width: 100%;
+	padding: 10px;
+	border: 1px solid #bbb;
+	border-radius: 6px;
+	font-size: 14px;
+	box-sizing: border-box;
+	transition: all 0.2s ease-in-out;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="password"]:focus {
+	border-color: #4a90e2;
+	box-shadow: 0 0 6px rgba(74, 144, 226, 0.3);
+	outline: none;
+}
+
+.form-group .checkbox-group {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+/* Inputs generales */
+input[type="text"], h\:inputText {
+	padding: 8px;
+	border-radius: 6px;
+	border: 1px solid #bbb;
+	font-size: 14px;
+	transition: all 0.2s ease-in-out;
+}
+
+input[type="text"]:focus {
+	border-color: #4a90e2;
+	box-shadow: 0 0 6px rgba(74, 144, 226, 0.3);
+	outline: none;
+}
+
+label {
+	font-size: 15px;
+	font-weight: 500;
+	color: #555;
+}
+
+/* Botones */
+.section .ui-button, 
+.section input[type="submit"], 
+.section input[type="button"],
+.button-section input, 
+.button-section h\:commandButton,
+button[type="button"] {
+	font-size: 18px;
+	padding: 15px 30px;
+	width: 100%;
+	background-color: #007BFF;
+	color: #fff;
+	border: none;
+	border-radius: 8px;
+	cursor: pointer;
+	font-weight: 500;
+	transition: all 0.25s ease-in-out;
+	margin-top: 10px;
+}
+
+.section .ui-button:hover, 
+.section input[type="submit"]:hover, 
+.section input[type="button"]:hover,
+.button-section input:hover, 
+.button-section h\:commandButton:hover,
+button[type="button"]:hover {
+	background-color: #0069d9;
+}
+
+.button-section {
+	text-align: center;
+	margin-top: 25px;
+	margin-bottom: 20px;
+}
+
+.button-section input, 
+.button-section h\:commandButton {
+	width: auto;
+	padding: 10px 24px;
+	margin: 0 12px;
+	display: inline-block;
+}
+
+/* User info */
+.user-info {
+	background: #e8f4f8;
+	padding: 15px;
+	border-radius: 8px;
+	margin-bottom: 20px;
+}
+
+/* Links */
+.back-link {
+	margin-top: 20px;
+	display: block;
+	color: #0066cc;
+	text-decoration: none;
+}
+
+.back-link:hover {
+	text-decoration: underline;
+}
+
+/* CreateRides specific */
+#mainTable {
+	margin: 0 auto;
+	width: 850px;
+	background-color: #fff;
+	padding: 20px;
+	border-radius: 12px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+#leftCol {
+	vertical-align: top;
+	padding-right: 25px;
+}
+
+#rightCol {
+	vertical-align: top;
+}
+
+table.formTable td {
+	padding: 10px 6px;
+}
+
+.ui-datepicker-inline {
+	border: 1px solid #ccc !important;
+	border-radius: 8px !important;
+	background: #fff !important;
+	padding: 12px !important;
+}
+
+/* Messages */
+#mezuak {
+	text-align: center;
+	margin-top: 15px;
+	color: #1a73e8;
+	font-weight: 500;
+}
+
+/* QueryRides Container - NUEVO */
+.query-container {
+	max-width: 900px;
+	margin: 0 auto 30px auto;
+}
+
+/* Messages Info - NUEVO */
+.messages-info {
+	text-align: center;
+	margin: 20px auto;
+	max-width: 1200px;
+	padding: 10px;
+	color: #1a73e8;
+	font-weight: 500;
+}

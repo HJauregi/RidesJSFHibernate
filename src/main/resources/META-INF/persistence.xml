@@ -12,7 +12,6 @@
 		<!-- Rides entitateak -->
 		<class>domain.Ride</class>
 		<class>domain.Driver</class>
-		<class>domain.User</class>
 		<class>domain.Traveler</class>
 		
 

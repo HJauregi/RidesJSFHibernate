@@ -22,40 +22,42 @@ import configuration.UtilDate;
 public class HibernateDataAccess {
 	private EntityManager db;
 
+	// Datu-basearen konexioa ireki
 	public void open() {
 		db = JPAUtil.getEntityManager();
 	}
 
+	// Datu-basearen konexioa itxi
 	public void close() {
 		if (db != null && db.isOpen()) {
 			db.close();
 		}
 	}
 
+	// Irteera-hiri guztiak lortu
 	public List<String> getDepartCities() {
-		TypedQuery<String> query = db.createQuery("SELECT DISTINCT r.departing FROM Ride r ORDER BY r.departing", String.class);
+		TypedQuery<String> query = db.createQuery("SELECT DISTINCT r.departing FROM Ride r ORDER BY r.departing",
+				String.class);
 		return query.getResultList();
 	}
 
+	// Helmuga-hiri guztiak lortu irteera-hiri jakin baterako
 	public List<String> getArrivalCities(String departing) {
 		TypedQuery<String> query = db.createQuery(
-				"SELECT DISTINCT r.arrival FROM Ride r WHERE r.departing=:from ORDER BY r.arrival",
-				String.class);
+				"SELECT DISTINCT r.arrival FROM Ride r WHERE r.departing=:from ORDER BY r.arrival", String.class);
 		query.setParameter("from", departing);
 		return query.getResultList();
 	}
 
+	// Bidaiak lortu irteera, helmuga eta dataren arabera
 	public List<Ride> getRidesByValues(String departing, String arrival, Date rideDate) {
 		if (departing == null || arrival == null || rideDate == null)
 			return new ArrayList<Ride>();
 		try {
 			return db.createQuery(
 					"SELECT r FROM Ride r WHERE r.departing=:departing AND r.arrival=:arrival AND r.date=:rideDate",
-					Ride.class)
-					.setParameter("departing", departing)
-					.setParameter("arrival", arrival)
-					.setParameter("rideDate", rideDate)
-					.getResultList();
+					Ride.class).setParameter("departing", departing).setParameter("arrival", arrival)
+					.setParameter("rideDate", rideDate).getResultList();
 		} catch (Exception e) {
 			System.out.println("Error en getRidesByValues: " + e.getMessage());
 			e.printStackTrace();
@@ -63,25 +65,25 @@ public class HibernateDataAccess {
 		}
 	}
 
+	// Hilabete zehatz bateko bidaiak dituzten datak lortu
 	public List<Date> getThisMonthDatesWithRides(String from, String to, Date date) {
-	    
-	    Date startDate = UtilDate.firstDayMonth(date);
-	    Date endDate = UtilDate.lastDayMonth(date);
 
-	    String jpql = "SELECT DISTINCT r.date FROM Ride r " +
-	                  "WHERE r.departing = :fromCity " +
-	                  "AND r.arrival = :toCity " +
-	                  "AND r.date BETWEEN :startDate AND :endDate";
-	    
-	    TypedQuery<Date> query = db.createQuery(jpql, Date.class);
-	    query.setParameter("fromCity", from);
-	    query.setParameter("toCity", to);
-	    query.setParameter("startDate", startDate);
-	    query.setParameter("endDate", endDate);
+		Date startDate = UtilDate.firstDayMonth(date);
+		Date endDate = UtilDate.lastDayMonth(date);
 
-	    return query.getResultList();
+		String jpql = "SELECT DISTINCT r.date FROM Ride r " + "WHERE r.departing = :fromCity "
+				+ "AND r.arrival = :toCity " + "AND r.date BETWEEN :startDate AND :endDate";
+
+		TypedQuery<Date> query = db.createQuery(jpql, Date.class);
+		query.setParameter("fromCity", from);
+		query.setParameter("toCity", to);
+		query.setParameter("startDate", startDate);
+		query.setParameter("endDate", endDate);
+
+		return query.getResultList();
 	}
 
+	// Bidaia berria sortu gidari batentzat
 	public Ride createRide(String from, String to, Date date, int nPlaces, float price, String driverEmail)
 			throws RideAlreadyExistException, RideMustBeLaterThanTodayException {
 		if (from == null || to == null || date == null || nPlaces <= 0 || price < 0 || driverEmail == null)
@@ -100,131 +102,120 @@ public class HibernateDataAccess {
 			db.getTransaction().rollback();
 			throw new RideAlreadyExistException("Driver already has a equal ride");
 		}
-		Ride ride = driver.addRide(from, to, date, price, nPlaces);
+		Ride ride = driver.addRide(from, to, date, nPlaces, price);
 		db.persist(driver);
 		db.getTransaction().commit();
-		
-		System.out.println("✓ BIDAIA SORTUTA: " + from + " → " + to + " (" + date + ") - " + price + "€");
-		
+
+		System.out.println(" BIDAIA SORTUTA: " + from + " -> " + to + " (" + date + ") - " + price + "€");
+
 		return ride;
 	}
 
-	public User register(String email, String name, String surname, String password, boolean isDriver) throws UserAlreadyRegistered {
-		if (email == null || name == null || password == null)
-			return null;
-		try {
-			db.getTransaction().begin();
-			User u = db.find(User.class, email);
-			if (u != null) {
-				db.getTransaction().rollback();
-				throw new UserAlreadyRegistered("Already exists a user with the same email");
-			}
-			User newUser;
-			if (isDriver) {
-				newUser = new Driver(email, password, name, surname);
-			} else {
-				newUser = new Traveler(email, password, name, surname);
-			}
-			db.persist(newUser);
-			db.getTransaction().commit();
-			return newUser;
-		} catch (Exception e) {
-			if (db.getTransaction().isActive()) {
-				db.getTransaction().rollback();
-			}
-			throw e;
-		}
-	}
-	
-	public User login(String email, String password) {
+	// Erabiltzaile berria erregistratu (Driver edo Traveler)
+	public User register(String name, String surname, String email, String password, boolean isDriver) throws UserAlreadyRegistered {
+	    if (email == null || name == null || password == null)
+	        return null;
 	    try {
-	        if (email == null || password == null) return null;
-
-	        TypedQuery<Driver> driverQuery = db.createQuery(
-	            "SELECT d FROM Driver d WHERE d.email=:email AND d.password=:password", Driver.class);
-	        driverQuery.setParameter("email", email);
-	        driverQuery.setParameter("password", password);
-
-	        try {
-	            Driver driver = driverQuery.getSingleResult();
-	            return driver;
-	        } catch (NoResultException e) {
-	            TypedQuery<Traveler> travelerQuery = db.createQuery(
-	                "SELECT t FROM Traveler t WHERE t.email=:email AND t.password=:password", Traveler.class);
-	            travelerQuery.setParameter("email", email);
-	            travelerQuery.setParameter("password", password);
-
-	            try {
-	                Traveler traveler = travelerQuery.getSingleResult();
-	                return traveler;
-	            } catch (NoResultException e2) {
-	                return null;
-	            }
+	        db.getTransaction().begin();
+	        User u = db.find(Driver.class, email);
+	        if (u == null) {
+	            u = db.find(Traveler.class, email);
 	        }
+	        if (u != null) {
+	            db.getTransaction().rollback();
+	            throw new UserAlreadyRegistered("Already exists a user with the same email");
+	        }
+	        
+	        if (isDriver) {
+	            Driver newDriver = new Driver(name, surname, email, password);
+	            db.persist(newDriver);
+	            db.getTransaction().commit();
+	            return newDriver;
+	        } else {
+	            Traveler newTraveler = new Traveler(name, surname, email, password);
+	            db.persist(newTraveler);
+	            db.getTransaction().commit();
+	            return newTraveler;
+	        }
+	    } catch (UserAlreadyRegistered e) {
+	        if (db.getTransaction().isActive()) {
+	            db.getTransaction().rollback();
+	        }
+	        throw e;
 	    } catch (Exception e) {
+	        if (db.getTransaction().isActive()) {
+	            db.getTransaction().rollback();
+	        }
+	        e.printStackTrace();
 	        return null;
 	    }
 	}
-	
+
+	// Erabiltzailearen saioa hasi email eta pasahitzarekin
+	public User login(String email, String password) {
+		try {
+			if (email == null || password == null)
+				return null;
+
+			TypedQuery<Driver> driverQuery = db
+					.createQuery("SELECT d FROM Driver d WHERE d.email=:email AND d.password=:password", Driver.class);
+			driverQuery.setParameter("email", email);
+			driverQuery.setParameter("password", password);
+
+			try {
+				Driver driver = driverQuery.getSingleResult();
+				return driver;
+			} catch (NoResultException e) {
+				TypedQuery<Traveler> travelerQuery = db.createQuery(
+						"SELECT t FROM Traveler t WHERE t.email=:email AND t.password=:password", Traveler.class);
+				travelerQuery.setParameter("email", email);
+				travelerQuery.setParameter("password", password);
+
+				try {
+					Traveler traveler = travelerQuery.getSingleResult();
+					return traveler;
+				} catch (NoResultException e2) {
+					return null;
+				}
+			}
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	// Driver bat lortu email-aren bidez
 	public Driver getDriver(String email) {
 		return db.find(Driver.class, email);
 	}
 	
-	public void initializeDB(){
-		
-		db.getTransaction().begin();
+	/*
+	public void dropDB() {
+	    try {
+	        if (db == null || !db.isOpen()) {
+	            open();
+	        }
+	        
+	        db.getTransaction().begin();
+	        
+	        db.createNativeQuery("DROP TABLE IF EXISTS traveler").executeUpdate();
+	        db.createNativeQuery("DROP TABLE IF EXISTS driver_ride").executeUpdate();
+	        db.createNativeQuery("DROP TABLE IF EXISTS ride").executeUpdate();
+	        db.createNativeQuery("DROP TABLE IF EXISTS driver").executeUpdate();
+	        db.createNativeQuery("DROP TABLE IF EXISTS hibernate_sequence").executeUpdate();
+	        
+	        db.getTransaction().commit();
+	        
+			System.out.println("=== DATU BASEA DROPEATUTA ===");
+			System.out.println("=================================");
 
-		try {
-			// Egiaztatu ea jadanik datuak badauden
-			Long driverCount = db.createQuery("SELECT COUNT(d) FROM Driver d", Long.class)
-					.getSingleResult();
-			
-			if (driverCount > 0) {
-				System.out.println("Datu-basea jadanik hasieratuta dago (" + driverCount + " driver)");
-				db.getTransaction().rollback();
-				return;
-			}
-			
-			System.out.println("Datu-basea hutsik dago, hasieratzen...");
-
-			Calendar today = Calendar.getInstance();
-			
-			int month=today.get(Calendar.MONTH);
-			int year=today.get(Calendar.YEAR);
-			if (month==12) { month=1; year+=1;}  
-			
-			//Create drivers 
-			Driver driver1=new Driver("driver1@gmail.com","abc123", "Ane", "Gaztañaga");
-			Driver driver2 = new Driver("1","1","1","1");
-			Driver driver3 = new Driver("driver3@gmail.com", "pass", "Test driver", "test");
-			
-			//Create traveler
-			Traveler traveler1 = new Traveler("2","2","2","2");
-			Traveler traveler2 = new Traveler("3","3","3","3");
-			
-			Date data = new Date();
-			Calendar cal = Calendar.getInstance();
-			cal.set(2025, 5, 20);
-			data = cal.getTime();
-			Ride r = driver2.addRide("Donostia", "Bilbo", UtilDate.trim(data), 4.99, 5);
-						
-			Ride r2 = driver2.addRide("Usurbil", "Donosti", UtilDate.trim(data), 2.99, 5);
-			
-			db.persist(driver1);
-			db.persist(driver2);
-			db.persist(driver3);
-			db.persist(traveler1);
-			db.persist(traveler2);
-			db.getTransaction().commit();
-			
-			System.out.println("Db initialized");
-		}
-		catch (Exception e){
-			if (db.getTransaction().isActive()) {
-				db.getTransaction().rollback();
-			}
-			System.err.println("Errorea datu-basea hasieratzerakoan: " + e.getMessage());
-			e.printStackTrace();
-		}
+	        
+	    } catch (Exception e) {
+	        if (db != null && db.getTransaction().isActive()) {
+	            db.getTransaction().rollback();
+	        }
+	        System.out.println("Error dropping database tables: " + e.getMessage());
+	        e.printStackTrace();
+	    }
 	}
+	*/
 }

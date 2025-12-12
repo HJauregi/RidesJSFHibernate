@@ -83,28 +83,6 @@ public class Ride implements Serializable {
 		this.driver = driver;
 		this.eserLibre=nPlaces;
 	}
-
-	/*public Ride(List<String> hiriList, List<Double> prezioList, Date date, int nPlaces, Driver driver) {
-		super();
-		this.nPlaces = nPlaces;
-		this.date=date;
-		this.driver = driver;
-		this.eserLibre=nPlaces;
-		this.car=c;
-		this.egoera=RideEgoera.MARTXAN;
-		List<Geldialdia> geldialdiList = new LinkedList<Geldialdia>();
-		for(int i=0;i<hiriList.size();i++) {
-			Geldialdia g = null;
-			if(i==hiriList.size()-1) {
-				g = new Geldialdia(i+1,0,i==hiriList.size()-1,hiriList.get(i));
-			} else {
-				g = new Geldialdia(i+1,prezioList.get(i),i==hiriList.size()-1,hiriList.get(i));
-			}
-			geldialdiList.add(g);
-		}
-		this.geldialdiak=geldialdiList;
-	}
-	*/
 	
 	/**
 	 * Get the  number of the ride
@@ -208,25 +186,6 @@ public class Ride implements Serializable {
 	public void itzuliEserlekuak(int kop) {
 		this.eserLibre+=kop;
 	}
-	
-	/*
-	public double prezioaKalkulatu(String from, String to) {
-		double kop = 0.0;
-		boolean fromAurkitua=false;
-		for(Geldialdia g:geldialdiak) {
-			if(fromAurkitua) {
-				if(g.getHiria().equals(to)) {
-					break;
-				}
-				kop+=g.getPrezioa();
-			} else if(g.getHiria().equals(from)) {
-				fromAurkitua=true;
-				kop+=g.getPrezioa();
-			}
-		}
-		return kop;
-	}
-	*/
 	
 	public String getFrom() {
 		return departing;

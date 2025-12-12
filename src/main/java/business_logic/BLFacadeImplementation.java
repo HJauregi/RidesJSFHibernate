@@ -18,20 +18,6 @@ public class BLFacadeImplementation implements BLFacade {
 	public BLFacadeImplementation(HibernateDataAccess dataAccess) {
 		this.dbManager = dataAccess;
 	}
-
-	
-	public void close() {
-		HibernateDataAccess dB4oManager;
-		dB4oManager = new HibernateDataAccess();
-		dB4oManager.close();
-
-	}
-
-	 public void initializeBD(){
-    	dbManager.open();
-		dbManager.initializeDB();
-		dbManager.close();
-	}
     
 	@Override
 	public List<String> getDepartCities() {
@@ -66,10 +52,10 @@ public class BLFacadeImplementation implements BLFacade {
 	}
 
 	@Override
-	public Ride createRide(String departingCity, String arrivalCity, Date rideDate, int nPlaces, double price,
+	public Ride createRide(String departingCity, String arrivalCity, Date rideDate, int nPlaces, float price,
 			String driverEmail) throws RideAlreadyExistException, RideMustBeLaterThanTodayException {
 		dbManager.open();
-		Ride r = dbManager.createRide(departingCity, arrivalCity, rideDate, nPlaces, nPlaces, driverEmail);
+		Ride r = dbManager.createRide(departingCity, arrivalCity, rideDate, nPlaces, price, driverEmail);
 		dbManager.close();
 		return r;
 	}
@@ -83,16 +69,16 @@ public class BLFacadeImplementation implements BLFacade {
 		return d;
 	}
 
-	/*
+	
 	@Override
-	public User register(String email, String name, String password, boolean isDriver) throws UserAlreadyRegistered {
-		dataAccess.open();
+	public User register(String name, String surname, String email, String password, boolean isDriver) throws UserAlreadyRegistered {
+		dbManager.open();
 		try {
-			User u = dataAccess.register(email, name, password, isDriver);
-			dataAccess.close();
+			User u = dbManager.register(name, surname, email, password, isDriver);
+			dbManager.close();
 			return u;
 		} catch(UserAlreadyRegistered e) {
-			dataAccess.close();
+			dbManager.close();
 			throw e;
 		}
 	}
@@ -104,6 +90,22 @@ public class BLFacadeImplementation implements BLFacade {
 		User u = dbManager.login(email, password);
 		dbManager.close();
 		return u;
+	}
+
+	@Override
+	public void open() {
+	    dbManager.open();
+	}
+
+	@Override
+	public void close() {
+	    dbManager.close();
+	}
+	
+	/*
+	@Override
+	public void dropDB() {
+		dbManager.dropDB();
 	}
 	*/
 }

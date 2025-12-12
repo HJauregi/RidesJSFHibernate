@@ -9,33 +9,73 @@ https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_3_0.xsd"
 		<display-name>Rides.xhtml</display-name>
 		<from-view-id>/Rides.xhtml</from-view-id>
 		<navigation-case>
-			<from-outcome>query</from-outcome>
-			<to-view-id>/QueryRides.xhtml</to-view-id>
+			<from-outcome>login</from-outcome>
+			<to-view-id>/Login.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<from-view-id>/Login.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>driver</from-outcome>
+			<to-view-id>/DriverMenu.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>traveler</from-outcome>
+			<to-view-id>/TravelerMenu.xhtml</to-view-id>
+			<redirect />
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
 		<display-name>Rides.xhtml</display-name>
 		<from-view-id>/Rides.xhtml</from-view-id>
 		<navigation-case>
-			<from-outcome>create</from-outcome>
+			<from-outcome>register</from-outcome>
+			<to-view-id>/Register.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<display-name>Register.xhtml</display-name>
+		<from-view-id>/Register.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>registered</from-outcome>
+			<to-view-id>/Rides.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<display-name>DriverMenu.xhtml</display-name>
+		<from-view-id>/DriverMenu.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>createRide</from-outcome>
 			<to-view-id>/CreateRides.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>queryRides</from-outcome>
+			<to-view-id>/QueryRides.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<display-name>TravelerMenu.xhtml</display-name>
+		<from-view-id>/TravelerMenu.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>queryRides</from-outcome>
+			<to-view-id>/QueryRides.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<from-view-id>*</from-view-id>
+		<navigation-case>
+			<from-outcome>close</from-outcome>
+			<to-view-id>/Rides.xhtml</to-view-id>
+			<redirect />
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
 		<from-view-id>/CreateRides.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>close</from-outcome>
-			<to-view-id>/Rides.xhtml</to-view-id>
+			<to-view-id>/DriverMenu.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
 	</navigation-rule>
-		<navigation-rule>
-		<from-view-id>/QueryRides.xhtml</from-view-id>
-		<navigation-case>
-			<from-outcome>close</from-outcome>
-			<to-view-id>/Rides.xhtml</to-view-id>
-			<redirect />
-		</navigation-case>
-	</navigation-rule>
-
 </faces-config>

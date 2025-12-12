@@ -17,8 +17,8 @@ public class Driver extends User implements Serializable{
 	private List<Ride> rides=new ArrayList<Ride>();
 	
 
-	public Driver(String email, String pass, String name, String surname) {
-		super(email, pass, name, surname);
+	public Driver(String name, String surname, String email, String pass) {
+		super(name, surname, email, pass);
 	}
 	
 	public Driver() {
@@ -37,7 +37,7 @@ public class Driver extends User implements Serializable{
 		return super.toString()+";"+rides;
 	}
 
-	public Ride addRide(String departing, String arriving, Date date, double price, int nPlaces)  {
+	public Ride addRide(String departing, String arriving, Date date, int nPlaces, double price)  {
         Ride ride=new Ride(departing,arriving,date,nPlaces,price, this);
         rides.add(ride);
         return ride;

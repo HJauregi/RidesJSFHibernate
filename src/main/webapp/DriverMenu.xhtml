@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<f:view>
+	<h:head>
+		<title>Driver Menu</title>
+		<h:outputStylesheet name="css/styles.css" />
+	</h:head>
+
+	<h:body>
+		<h:form id="menuForm">
+
+			<div class="panel">
+
+				<h2>Driver Menu</h2>
+
+				<div class="user-info">
+					<p>
+						<strong>Ongi etorri, #{credentials.loggedName}!</strong>
+					</p>
+					<p>Email: #{credentials.loggedEmail}</p>
+				</div>
+
+				<div class="section">
+					<h:commandButton value="Create Rides" action="CreateRides" />
+				</div>
+
+				<div class="section">
+					<h:commandButton value="Query Rides" action="QueryRides" />
+				</div>
+
+				<div class="button-section">
+					<h:commandButton value="Close" action="close" immediate="true" />
+				</div>
+				<h:messages id="messages" style="color:red; margin-top: 15px;" />
+
+			</div>
+
+		</h:form>
+	</h:body>
+
+</f:view>
+
+</html>

@@ -9,30 +9,32 @@
 
 <f:view>
 	<h:head>
-		<title>RidesJSF</title>
+		<title>Traveler Menu</title>
 		<h:outputStylesheet name="css/styles.css" />
 	</h:head>
 
 	<h:body>
-		<f:event type="preRenderView" listener="#{hasieratu.init}" />
-
-		<h:form id="nireForm">
+		<h:form id="menuForm">
 
 			<div class="panel">
 
-				<h2>Select Option</h2>
+				<h2>Traveler Menu</h2>
 
-				<div class="section">
-					<h:commandButton value="Register" action="#{rides.register}" />
-
+				<div class="user-info">
+					<p>
+						<strong>Ongi etorri, #{credentials.loggedName}!</strong>
+					</p>
+					<p>Email: #{credentials.loggedEmail}</p>
 				</div>
 
 				<div class="section">
-					<h:commandButton value="Login" action="#{rides.login}" />
+					<h:commandButton value="Query Rides" action="QueryRides" />
 				</div>
 
-
-				<h:messages id="mezuak" style="color:blue" />
+				<div class="button-section">
+					<h:commandButton value="Close" action="close" immediate="true" />
+				</div>
+				<h:messages id="messages" style="color:red; margin-top: 15px;" />
 
 			</div>
 
@@ -40,5 +42,5 @@
 	</h:body>
 
 </f:view>
-
 </html>
+

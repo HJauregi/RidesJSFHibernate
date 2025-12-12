@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<f:view>
+	<h:head>
+		<title>Register</title>
+		<h:outputStylesheet name="css/styles.css" />
+	</h:head>
+
+	<h:body>
+		<h:form id="registerForm">
+
+			<div class="panel">
+
+				<h2>Register</h2>
+
+				<div class="section">
+
+					<div class="form-group">
+						<label for="name">Izena:</label>
+						<h:inputText id="name" value="#{credentials.name}" required="true" 
+							requiredMessage="Izena beharrezkoa da" />
+					</div>
+
+					<div class="form-group">
+						<label for="surname">Abizena:</label>
+						<h:inputText id="surname" value="#{credentials.surname}" />
+					</div>
+
+					<div class="form-group">
+						<label for="email">Email:</label>
+						<h:inputText id="email" value="#{credentials.email}"
+							required="true" 
+							requiredMessage="Emaila beharrezkoa da"
+							validatorMessage="Email formatua ez da zuzena">
+							<f:validateRegex pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" />
+						</h:inputText>
+					</div>
+
+					<div class="form-group">
+						<label for="password">Pasahitza:</label>
+						<h:inputSecret id="password" value="#{credentials.password}"
+							required="true" 
+							requiredMessage="Pasahitza beharrezkoa da"
+							validatorMessage="Pasahitzak gutxienez 6 karaktere izan behar ditu">
+							<f:validateLength minimum="6" />
+						</h:inputSecret>
+					</div>
+
+					<div class="form-group">
+						<div class="checkbox-group">
+							<h:selectBooleanCheckbox id="isDriver"
+								value="#{credentials.driver}" />
+							<label for="isDriver">Gidari bezala erregistratu:</label>
+						</div>
+					</div>
+
+					<h:commandButton value="Register" action="#{credentials.register}" />
+
+				</div>
+
+				<div class="button-section">
+					<h:commandButton value="Close" action="close" immediate="true" />
+				</div>
+				
+				<h:messages id="messages" style="margin-top: 15px;" 
+					errorStyle="color:red;" 
+					infoStyle="color:green;" />
+
+			</div>
+
+		</h:form>
+	</h:body>
+
+</f:view>
+
+</html>

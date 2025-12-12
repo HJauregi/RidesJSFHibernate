@@ -4,9 +4,10 @@ import java.util.Date;
 import java.util.List;
 
 import domain.Ride;
-
+import domain.User;
 import domain.Driver;
 import exceptions.RideMustBeLaterThanTodayException;
+import exceptions.UserAlreadyRegistered;
 import exceptions.RideAlreadyExistException;
 
  
@@ -43,7 +44,7 @@ public interface BLFacade  {
 	 * @throws RideMustBeLaterThanTodayException if the ride date is before today 
  	 * @throws RideAlreadyExistException if the same ride already exists for the driver
 	 */
-   public Ride createRide(String departingCity, String arrivalCity, Date rideDate, int nPlaces, double price,
+   public Ride createRide(String departingCity, String arrivalCity, Date rideDate, int nPlaces, float price,
 			String driverEmail) throws RideMustBeLaterThanTodayException, RideAlreadyExistException;
 	
 	
@@ -65,16 +66,18 @@ public interface BLFacade  {
 	 * @return collection of rides
 	 */
 	public List<Date> getThisMonthDatesWithRides(String from, String to, Date date);
-	
-	/**
-	 * This method calls the data access to initialize the database with some events and questions.
-	 * It is invoked only when the option "initialize" is declared in the tag dataBaseOpenMode of resources/config.xml file
-	 */	
-	public void initializeBD();
-	
-	//public boolean register(UserData u, String type);
-	
-	//public User login(String email, String password);
-	
+			
 	public Driver getDriver(String email);
+
+	public User register(String name, String surname, String email, String password, boolean isDriver) throws UserAlreadyRegistered;
+	
+	public User login(String email, String password);
+	
+    public void open();
+    
+    public void close();
+    
+    
+    //public void dropDB();
+    
 }

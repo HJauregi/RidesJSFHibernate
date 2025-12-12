@@ -9,8 +9,8 @@ import javax.persistence.Entity;
 public class Traveler extends User implements Serializable{
 
 	
-	public Traveler (String email, String password, String name, String surname) {
-		super(email, password, name, surname);
+	public Traveler (String name, String surname, String email, String password) {
+		super(name, surname, email, password);
 	}
 	
 	public Traveler() {
