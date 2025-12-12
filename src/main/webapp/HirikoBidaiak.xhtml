@@ -25,6 +25,8 @@
 					<f:selectItem itemLabel="Select a city" itemValue=""
 						noSelectionOption="true" />
 					<f:selectItems value="#{queryRides.departCities}" />
+					<p:ajax listener="#{queryRides.onDepartCitySelect}"/>
+					
 				</p:selectOneMenu>
 
 				<div class="button-section">

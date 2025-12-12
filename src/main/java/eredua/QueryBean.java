@@ -163,13 +163,14 @@ public class QueryBean implements Serializable {
 	
 	
 	
-	public void onDEpartCitySelect() {
+	public void onDepartCitySelect() {
 		searchPerformed = false;
 
 		if (departCity != null && !departCity.isEmpty()) {
 			System.out.println("=== BIDAI GUZTIAK KARGATZEN ===");
 			System.out.println("Irteera hiria: " + departCity);
 			allRides = FacadeBean.getBusinessLogic().getAllRides(departCity);
+			System.out.println("Bidaiak guztiak: " + allRides);
 			System.out.println("Bidaiak aurkituta: " + allRides.size());
 			System.out.println("=================================");
 		} else {
