@@ -10,10 +10,12 @@
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
 		<!-- Rides entitateak -->
-		<class>domain.Ride</class>
+		<class>domain.User</class>
 		<class>domain.Driver</class>
 		<class>domain.Traveler</class>
-		
+		<class>domain.Admin</class>
+		<class>domain.Ride</class>
+		<class>domain.Erreserba</class>
 
 		<properties>
 			<!-- MariaDB -->
@@ -28,7 +30,7 @@
 			<property name="hibernate.dialect"
 				value="org.hibernate.dialect.MariaDBDialect" />
 			<property name="hibernate.hbm2ddl.auto" value="update" />
-			<property name="hibernate.show_sql" value="false" />
+			<property name="hibernate.format_sql" value="true" />
 		</properties>
 	</persistence-unit>
 

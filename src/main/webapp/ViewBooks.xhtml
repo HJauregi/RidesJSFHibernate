@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Erreserbak Ikusi</title>
+    <h:outputStylesheet name="css/styles.css" />
+</h:head>
+
+<h:body>
+    <h:form id="bookingsForm">
+
+        <div class="panel">
+            <h2>Nire Bidaien Erreserbak</h2>
+            <div class="user-info">
+                <p><strong>Gidaria: #{credentials.loggedName}</strong></p>
+                <p>Email: #{credentials.loggedEmail}</p>
+            </div>
+
+            <div class="section">
+                <h3>Aukeratu bidaia bat</h3>
+                <h:selectOneMenu value="#{erreserbakBean.selectedRideNumber}"
+                                 styleClass="select-ride">
+                    <f:selectItem itemLabel="Aukeratu bidaia..." itemValue="#{null}" />
+                    <f:selectItems value="#{erreserbakBean.driverRides}" var="ride"
+                                   itemLabel="#{ride.from} → #{ride.to} (#{ride.date})"
+                                   itemValue="#{ride.rideNumber}" />
+                </h:selectOneMenu>
+                <h:commandButton value="Ikusi Erreserbak"
+                                 action="#{erreserbakBean.loadBookings}" 
+                                 styleClass="ui-button ui-button-success" />
+            </div>
+        </div>
+
+        <h:panelGroup rendered="#{erreserbakBean.selectedRideNumber != null}">
+            <h3>Erreserbak</h3>
+            <p:dataTable id="bookingsTable" value="#{erreserbakBean.bookings}" var="booking"
+                         style="width:100%; border-radius:12px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.08); background:#fff;"
+                         paginator="true" rows="10"
+                         emptyMessage="Ez dago erreserbarik bidaia honetan">
+
+                <p:column headerText="Erreserba #">#{booking.eskaeraNum}</p:column>
+                <p:column headerText="Bidaiaria">#{booking.bidaiariaEmail}</p:column>
+                <p:column headerText="Eserlekuak" style="text-align:center;">#{booking.plazaKop}</p:column>
+                <p:column headerText="Noiztik">#{booking.from}</p:column>
+                <p:column headerText="Nora">#{booking.to}</p:column>
+                <p:column headerText="Prezioa" style="text-align:center;">#{booking.prezioa} €</p:column>
+                <p:column headerText="Date">
+					<h:outputText value="#{booking.erreserbaData}">
+						<f:convertDateTime pattern="dd/MM/yyyy" timeZone="Europe/Madrid" />
+					</h:outputText>
+				</p:column>
+
+            </p:dataTable>
+        </h:panelGroup>
+
+        <div class="button-section" style="margin-top:15px;">
+            <h:commandButton value="Close" action="driver" immediate="true" styleClass="ui-button" />
+        </div>
+
+        <h:messages id="messages" style="color:green; margin-top: 15px;" />
+
+    </h:form>
+</h:body>
+</html>

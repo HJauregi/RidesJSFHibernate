@@ -6,11 +6,12 @@ import java.util.List;
 
 import data_access.HibernateDataAccess;
 import domain.Driver;
+import domain.Erreserba;
+import domain.ErreserbaData;
 import domain.Ride;
+import domain.Traveler;
 import domain.User;
-import exceptions.RideAlreadyExistException;
-import exceptions.RideMustBeLaterThanTodayException;
-import exceptions.UserAlreadyRegistered;
+import exceptions.*;
 
 public class BLFacadeImplementation implements BLFacade {
 	private HibernateDataAccess dbManager;
@@ -102,19 +103,37 @@ public class BLFacadeImplementation implements BLFacade {
 	    dbManager.close();
 	}
 	
-	
-	@Override
-	public List<Ride> getAllRides(String from){
-		dbManager.open();
-		List<Ride> rides = dbManager.getAllRides(from);
-		dbManager.close();
-		return rides;
-	}
-	
-	/*
 	@Override
 	public void dropDB() {
 		dbManager.dropDB();
 	}
-	*/
+	
+	@Override
+	public boolean sortuErreserba(Traveler t, ErreserbaData eData) throws
+	EserlekurikLibreEzException, ErreserbaAlreadyExistsException, DiruaEzDaukaException, DatuakNullException {
+		dbManager.open();
+		boolean b = dbManager.sortuErreserba(t, eData);
+		dbManager.close();
+		return b;
+	}
+
+	@Override
+	public Traveler getTraveler(String currentUserEmail) {
+		return dbManager.getTraveler(currentUserEmail);
+	}
+	
+	@Override
+	public void updateTraveler(Traveler traveler) {
+	    dbManager.open();
+	    dbManager.updateTraveler(traveler);
+	    dbManager.close();
+	}
+	
+	@Override
+	public List<Erreserba> getBookingsByRide(Integer rideNumber) {
+	    dbManager.open();
+	    List<Erreserba> bookings = dbManager.getBookingsByRide(rideNumber);
+	    dbManager.close();
+	    return bookings;
+	}
 }

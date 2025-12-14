@@ -148,6 +148,46 @@ button[type="button"]:hover {
 	margin-bottom: 20px;
 }
 
+/* Tabla de reservas */
+.bookings-table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 20px;
+	background-color: white;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.bookings-table th {
+	background-color: #4CAF50;
+	color: white;
+	padding: 12px;
+	text-align: left;
+	font-weight: bold;
+}
+
+.bookings-table td {
+	padding: 12px;
+	border-bottom: 1px solid #ddd;
+}
+
+.bookings-table tr:hover {
+	background-color: #f5f5f5;
+}
+
+.bookings-table tr:nth-child(even) {
+	background-color: #f9f9f9;
+}
+
+.no-bookings {
+	color: #666;
+	font-style: italic;
+	text-align: center;
+	padding: 20px;
+	background-color: #f9f9f9;
+	border-radius: 4px;
+	margin-top: 20px;
+}
+
 /* Links */
 .back-link {
 	margin-top: 20px;
@@ -160,56 +200,10 @@ button[type="button"]:hover {
 	text-decoration: underline;
 }
 
-/* CreateRides specific */
-#mainTable {
-	margin: 0 auto;
-	width: 850px;
-	background-color: #fff;
-	padding: 20px;
-	border-radius: 12px;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-#leftCol {
-	vertical-align: top;
-	padding-right: 25px;
-}
-
-#rightCol {
-	vertical-align: top;
-}
-
-table.formTable td {
-	padding: 10px 6px;
-}
-
-.ui-datepicker-inline {
-	border: 1px solid #ccc !important;
-	border-radius: 8px !important;
-	background: #fff !important;
-	padding: 12px !important;
-}
-
-/* Messages */
+/* Mensajes */
 #mezuak {
 	text-align: center;
 	margin-top: 15px;
-	color: #1a73e8;
-	font-weight: 500;
-}
-
-/* QueryRides Container - NUEVO */
-.query-container {
-	max-width: 900px;
-	margin: 0 auto 30px auto;
-}
-
-/* Messages Info - NUEVO */
-.messages-info {
-	text-align: center;
-	margin: 20px auto;
-	max-width: 1200px;
-	padding: 10px;
 	color: #1a73e8;
 	font-weight: 500;
 }

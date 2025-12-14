@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<f:view>
+	<h:head>
+		<title>Kudeatu Dirua</title>
+		<h:outputStylesheet name="css/styles.css" />
+	</h:head>
+
+	<h:body>
+		<h:form id="manageMoneyForm">
+
+			<div class="panel">
+
+				<h2>Kudeatu Dirua</h2>
+
+				<div class="user-info">
+					<p>
+						<strong>Erabiltzailea: #{credentials.loggedName}</strong>
+					</p>
+					<p>Email: #{credentials.loggedEmail}</p>
+				</div>
+
+				<div class="section">
+					<h3>Oraingo egoera</h3>
+					<p><strong>Diru erabilgarria:</strong> #{manageMoneyBean.currentCash} €</p>
+					<p><strong>Diru izoztua:</strong> #{manageMoneyBean.frozenMoney} €</p>
+					<p><strong>Guztira:</strong> #{manageMoneyBean.totalMoney} €</p>
+				</div>
+
+				<div class="section">
+					<h3>Gehitu dirua</h3>
+					<h:outputLabel for="amount" value="Zenbatekoa (€):" />
+					<h:inputText id="amount" value="#{manageMoneyBean.amount}" 
+						required="true" requiredMessage="Zenbatekoa beharrezkoa da"
+						style="margin-left: 10px; margin-right: 10px;">
+						<f:validateDoubleRange minimum="0.01" maximum="10000" />
+					</h:inputText>
+					<h:commandButton value="Gehitu" action="#{manageMoneyBean.addMoney}" />
+				</div>
+
+				<div class="button-section">
+					<h:commandButton value="Close" action="traveler" immediate="true" />
+				</div>
+
+				<h:messages id="messages" style="color:green; margin-top: 15px;" />
+
+			</div>
+
+		</h:form>
+	</h:body>
+
+</f:view>
+</html>

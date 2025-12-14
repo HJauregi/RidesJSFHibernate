@@ -25,10 +25,6 @@ public class QueryBean implements Serializable {
 	private List<String> departCities;
 	private List<String> arrivalCities;
 	private List<Ride> ridesList;
-	private List<Ride> allRides;
-
-	
-	private String selectedDeparting;
 
 	private boolean searchPerformed;
 
@@ -45,24 +41,57 @@ public class QueryBean implements Serializable {
 		try {
 			departCities = FacadeBean.getBusinessLogic().getDepartCities();
 			System.out.println("Irteera-hiriak kargatuta: " + departCities.size());
+			
+			// Debug: mostrar las ciudades
+			if (departCities != null && !departCities.isEmpty()) {
+				System.out.println("Hiriak:");
+				for (String city : departCities) {
+					System.out.println("  - " + city);
+				}
+			} else {
+				System.out.println("OHARRA: Ez dago irteera-hiririk datu-basean!");
+			}
+			
 			System.out.println("============================");
 		} catch (Exception e) {
 			System.err.println("ERROREA: Irteera-hiriak kargatzean");
 			e.printStackTrace();
+			departCities = new ArrayList<>();
 		}
 	}
 
 	// Getters and Setters
 	public List<String> getDepartCities() {
+		if (departCities == null) {
+			departCities = new ArrayList<>();
+		}
 		return departCities;
 	}
 
+	public void setDepartCities(List<String> departCities) {
+		this.departCities = departCities;
+	}
+
 	public List<String> getArrivalCities() {
+		if (arrivalCities == null) {
+			arrivalCities = new ArrayList<>();
+		}
 		return arrivalCities;
 	}
 
+	public void setArrivalCities(List<String> arrivalCities) {
+		this.arrivalCities = arrivalCities;
+	}
+
 	public List<Ride> getRides() {
+		if (ridesList == null) {
+			ridesList = new ArrayList<>();
+		}
 		return ridesList;
+	}
+
+	public void setRides(List<Ride> ridesList) {
+		this.ridesList = ridesList;
 	}
 
 	public String getDepartCity() {
@@ -95,19 +124,34 @@ public class QueryBean implements Serializable {
 
 	// Irteera-hiria aldatzean helmuga-hiriak kargatu
 	public void onDepartCityChange() {
+		System.out.println("=== onDepartCityChange DEITURIK ===");
+		System.out.println("Hautatutako irteera hiria: " + departCity);
+		
 		arrivalCity = null;
 		ridesList = new ArrayList<>();
 		searchPerformed = false;
 
 		if (departCity != null && !departCity.isEmpty()) {
-			System.out.println("=== HELMUGA-HIRIAK KARGATZEN ===");
-			System.out.println("Irteera hiria: " + departCity);
-			arrivalCities = FacadeBean.getBusinessLogic().getDestinationCities(departCity);
-			System.out.println("Helmuga-hiriak aurkituta: " + arrivalCities.size());
-			System.out.println("=================================");
+			try {
+				arrivalCities = FacadeBean.getBusinessLogic().getDestinationCities(departCity);
+				
+				System.out.println("Helmuga-hiriak aurkituta: " + arrivalCities.size());
+				if (arrivalCities != null && !arrivalCities.isEmpty()) {
+					System.out.println("Helmuga hiriak:");
+					for (String city : arrivalCities) {
+						System.out.println("  - " + city);
+					}
+				}
+				
+			} catch (Exception e) {
+				System.err.println("ERROREA helmuga-hiriak kargatzean: " + e.getMessage());
+				e.printStackTrace();
+				arrivalCities = new ArrayList<>();
+			}
 		} else {
 			arrivalCities = new ArrayList<>();
 		}
+		System.out.println("===================================");
 	}
 
 	// Data hautatzean bidaiak bilatu
@@ -128,13 +172,21 @@ public class QueryBean implements Serializable {
 			System.out.println("Nora: " + arrivalCity);
 			System.out.println("Data: " + new SimpleDateFormat("yyyy-MM-dd").format(rideDate));
 
-			ridesList = FacadeBean.getBusinessLogic().getRides(departCity, arrivalCity, rideDate);
-			if (ridesList == null)
+			try {
+				ridesList = FacadeBean.getBusinessLogic().getRides(departCity, arrivalCity, rideDate);
+				if (ridesList == null) {
+					ridesList = new ArrayList<>();
+				}
+
+				searchPerformed = true;
+
+				System.out.println("Emaitzak: " + ridesList.size() + " bidaia aurkitu");
+			} catch (Exception e) {
+				System.err.println("ERROREA bidaiak bilatzean: " + e.getMessage());
+				e.printStackTrace();
 				ridesList = new ArrayList<>();
-
-			searchPerformed = true;
-
-			System.out.println("Emaitzak: " + ridesList.size() + " bidaia aurkitu");
+			}
+			
 			System.out.println("========================");
 		}
 	}
@@ -159,22 +211,5 @@ public class QueryBean implements Serializable {
 		if (rideDate == null)
 			return "";
 		return new SimpleDateFormat("MMMM dd, yyyy").format(rideDate);
-	}
-	
-	
-	
-	public void onDepartCitySelect() {
-		searchPerformed = false;
-
-		if (departCity != null && !departCity.isEmpty()) {
-			System.out.println("=== BIDAI GUZTIAK KARGATZEN ===");
-			System.out.println("Irteera hiria: " + departCity);
-			allRides = FacadeBean.getBusinessLogic().getAllRides(departCity);
-			System.out.println("Bidaiak guztiak: " + allRides);
-			System.out.println("Bidaiak aurkituta: " + allRides.size());
-			System.out.println("=================================");
-		} else {
-			arrivalCities = new ArrayList<>();
-		}
 	}
 }

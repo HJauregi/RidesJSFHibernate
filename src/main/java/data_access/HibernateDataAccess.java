@@ -1,7 +1,6 @@
 package data_access;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -9,11 +8,18 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
+import domain.Admin;
 import domain.Driver;
+import domain.Erreserba;
+import domain.ErreserbaData;
 import domain.Ride;
 import domain.Traveler;
 import domain.User;
 import configuration.JPAUtil;
+import exceptions.DatuakNullException;
+import exceptions.DiruaEzDaukaException;
+import exceptions.ErreserbaAlreadyExistsException;
+import exceptions.EserlekurikLibreEzException;
 import exceptions.RideAlreadyExistException;
 import exceptions.RideMustBeLaterThanTodayException;
 import exceptions.UserAlreadyRegistered;
@@ -25,6 +31,7 @@ public class HibernateDataAccess {
 	// Datu-basearen konexioa ireki
 	public void open() {
 		db = JPAUtil.getEntityManager();
+		initializeAdmin();
 	}
 
 	// Datu-basearen konexioa itxi
@@ -112,43 +119,54 @@ public class HibernateDataAccess {
 	}
 
 	// Erabiltzaile berria erregistratu (Driver edo Traveler)
-	public User register(String name, String surname, String email, String password, boolean isDriver) throws UserAlreadyRegistered {
-	    if (email == null || name == null || password == null)
-	        return null;
-	    try {
-	        db.getTransaction().begin();
-	        User u = db.find(Driver.class, email);
-	        if (u == null) {
-	            u = db.find(Traveler.class, email);
-	        }
-	        if (u != null) {
-	            db.getTransaction().rollback();
-	            throw new UserAlreadyRegistered("Already exists a user with the same email");
-	        }
-	        
-	        if (isDriver) {
-	            Driver newDriver = new Driver(name, surname, email, password);
-	            db.persist(newDriver);
-	            db.getTransaction().commit();
-	            return newDriver;
-	        } else {
-	            Traveler newTraveler = new Traveler(name, surname, email, password);
-	            db.persist(newTraveler);
-	            db.getTransaction().commit();
-	            return newTraveler;
-	        }
-	    } catch (UserAlreadyRegistered e) {
-	        if (db.getTransaction().isActive()) {
-	            db.getTransaction().rollback();
-	        }
-	        throw e;
-	    } catch (Exception e) {
-	        if (db.getTransaction().isActive()) {
-	            db.getTransaction().rollback();
-	        }
-	        e.printStackTrace();
-	        return null;
-	    }
+	public User register(String name, String surname, String email, String password, boolean isDriver)
+			throws UserAlreadyRegistered {
+		if (email == null || name == null || password == null)
+			return null;
+
+		if ("admin".equals(email)) {
+			throw new UserAlreadyRegistered("Cannot register with admin email");
+		}
+
+		try {
+			db.getTransaction().begin();
+
+			User u = db.find(Admin.class, email);
+			if (u == null) {
+				u = db.find(Driver.class, email);
+			}
+			if (u == null) {
+				u = db.find(Traveler.class, email);
+			}
+
+			if (u != null) {
+				db.getTransaction().rollback();
+				throw new UserAlreadyRegistered("Already exists a user with the same email");
+			}
+
+			if (isDriver) {
+				Driver newDriver = new Driver(name, surname, email, password);
+				db.persist(newDriver);
+				db.getTransaction().commit();
+				return newDriver;
+			} else {
+				Traveler newTraveler = new Traveler(name, surname, email, password);
+				db.persist(newTraveler);
+				db.getTransaction().commit();
+				return newTraveler;
+			}
+		} catch (UserAlreadyRegistered e) {
+			if (db.getTransaction().isActive()) {
+				db.getTransaction().rollback();
+			}
+			throw e;
+		} catch (Exception e) {
+			if (db.getTransaction().isActive()) {
+				db.getTransaction().rollback();
+			}
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	// Erabiltzailearen saioa hasi email eta pasahitzarekin
@@ -157,25 +175,35 @@ public class HibernateDataAccess {
 			if (email == null || password == null)
 				return null;
 
-			TypedQuery<Driver> driverQuery = db
-					.createQuery("SELECT d FROM Driver d WHERE d.email=:email AND d.password=:password", Driver.class);
-			driverQuery.setParameter("email", email);
-			driverQuery.setParameter("password", password);
+			TypedQuery<Admin> adminQuery = db
+					.createQuery("SELECT a FROM Admin a WHERE a.email=:email AND a.password=:password", Admin.class);
+			adminQuery.setParameter("email", email);
+			adminQuery.setParameter("password", password);
 
 			try {
-				Driver driver = driverQuery.getSingleResult();
-				return driver;
+				Admin admin = adminQuery.getSingleResult();
+				return admin;
 			} catch (NoResultException e) {
-				TypedQuery<Traveler> travelerQuery = db.createQuery(
-						"SELECT t FROM Traveler t WHERE t.email=:email AND t.password=:password", Traveler.class);
-				travelerQuery.setParameter("email", email);
-				travelerQuery.setParameter("password", password);
+				TypedQuery<Driver> driverQuery = db.createQuery(
+						"SELECT d FROM Driver d WHERE d.email=:email AND d.password=:password", Driver.class);
+				driverQuery.setParameter("email", email);
+				driverQuery.setParameter("password", password);
 
 				try {
-					Traveler traveler = travelerQuery.getSingleResult();
-					return traveler;
+					Driver driver = driverQuery.getSingleResult();
+					return driver;
 				} catch (NoResultException e2) {
-					return null;
+					TypedQuery<Traveler> travelerQuery = db.createQuery(
+							"SELECT t FROM Traveler t WHERE t.email=:email AND t.password=:password", Traveler.class);
+					travelerQuery.setParameter("email", email);
+					travelerQuery.setParameter("password", password);
+
+					try {
+						Traveler traveler = travelerQuery.getSingleResult();
+						return traveler;
+					} catch (NoResultException e3) {
+						return null;
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -185,44 +213,209 @@ public class HibernateDataAccess {
 
 	// Driver bat lortu email-aren bidez
 	public Driver getDriver(String email) {
-		return db.find(Driver.class, email);
+	    try {
+	        if (db == null || !db.isOpen()) {
+	            open();
+	        }
+	        
+	        Driver driver = db.find(Driver.class, email);
+	        
+	        if (driver != null) {
+	            // IMPORTANTE: Forzar la carga de los rides ANTES de cerrar la sesión
+	            driver.getRides().size();
+	        }
+	        
+	        return driver;
+	        
+	    } catch (Exception e) {
+	        System.err.println("Error getting driver: " + e.getMessage());
+	        e.printStackTrace();
+	        return null;
+	    }
 	}
-	
-	
-	public List<Ride> getAllRides(String from){
-		return db.createQuery(
-				"SELECT r FROM Ride r WHERE r.departing=:from", Ride.class)
-				.setParameter("from", from).getResultList();
-	}
-	
-	/*
+
 	public void dropDB() {
+	    try {
+	        if (db == null || !db.isOpen()) {
+	            open();
+	        }
+
+	        db.getTransaction().begin();
+
+	        db.createNativeQuery("DROP TABLE IF EXISTS erreserba").executeUpdate();
+	        db.createNativeQuery("DROP TABLE IF EXISTS traveler").executeUpdate();
+	        db.createNativeQuery("DROP TABLE IF EXISTS driver_ride").executeUpdate();
+	        db.createNativeQuery("DROP TABLE IF EXISTS ride").executeUpdate();
+	        db.createNativeQuery("DROP TABLE IF EXISTS driver").executeUpdate();
+	        db.createNativeQuery("DROP TABLE IF EXISTS hibernate_sequence").executeUpdate();
+
+	        db.getTransaction().commit();
+
+	        System.out.println("=== DATU BASEA DROPEATUTA ===");
+	        System.out.println("=================================");
+
+	    } catch (Exception e) {
+	        if (db != null && db.getTransaction().isActive()) {
+	            db.getTransaction().rollback();
+	        }
+	        e.printStackTrace();
+	    }
+	}
+
+
+	// Método para crear el admin por defecto si no existe
+	public void initializeAdmin() {
+		try {
+			db.getTransaction().begin();
+
+			Admin existingAdmin = db.find(Admin.class, "admin");
+
+			if (existingAdmin == null) {
+				Admin defaultAdmin = new Admin("Admin", "Admin", "admin", "admin");
+				db.persist(defaultAdmin);
+
+				System.out.println("=== DEFEKTUZKO ADMINISTRATZAILEA SORTUTA ===");
+				System.out.println("Email: admin");
+				System.out.println("Password: admin");
+				System.out.println("================================");
+			}
+
+			db.getTransaction().commit();
+		} catch (Exception e) {
+			if (db.getTransaction().isActive()) {
+				db.getTransaction().rollback();
+			}
+			System.out.println("Error initializing admin: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	public boolean sortuErreserba(Traveler t, ErreserbaData erreData) throws EserlekurikLibreEzException,
+			ErreserbaAlreadyExistsException, DiruaEzDaukaException, DatuakNullException {
+
+		if (erreData.kop > 0) {
+			if (db == null || !db.isOpen()) {
+				open();
+			}
+
+			db.getTransaction().begin();
+			try {
+				Ride r = db.find(Ride.class, erreData.rNumber);
+				Traveler tr = db.find(Traveler.class, t.getEmail());
+
+				if (r == null || tr == null) {
+					db.getTransaction().rollback();
+					throw new DatuakNullException("Datuak null dira");
+				}
+
+				boolean result = erreserbaSortuEtaGehitu(erreData.kop, erreData.from, erreData.to, r, tr);
+				return result;
+
+			} catch (EserlekurikLibreEzException | DiruaEzDaukaException | ErreserbaAlreadyExistsException e) {
+				if (db.getTransaction().isActive()) {
+					db.getTransaction().rollback();
+				}
+				throw e;
+			} catch (Exception e) {
+				if (db.getTransaction().isActive()) {
+					db.getTransaction().rollback();
+				}
+				System.err.println("Errorea sortuErreserba deitzean: " + e.getMessage());
+				e.printStackTrace();
+				throw new DatuakNullException("Errorea erreserba sortzean: " + e.getMessage());
+			}
+		}
+		return false;
+	}
+
+	private boolean erreserbaSortuEtaGehitu(int kop, String from, String to, Ride r, Traveler tr)
+			throws EserlekurikLibreEzException, DiruaEzDaukaException, ErreserbaAlreadyExistsException {
+
+		if (!tr.existBook(r)) {
+			if (tr.diruaDauka(r.getPrice())) {
+				if (r.eserlekuakLibre(kop)) {
+					Erreserba erreserbaBerria = tr.sortuErreserba(r, kop, from, to, r.getPrice());
+					r.gehituErreserba(erreserbaBerria);
+
+					// Persistir tanto el traveler como el ride
+					db.persist(erreserbaBerria);
+					db.merge(tr);
+					db.merge(r);
+
+					db.getTransaction().commit();
+
+					System.out.println("=== ERRESERBA SORTUTA ===");
+					System.out.println("Bidaiaria: " + tr.getEmail());
+					System.out.println("Bidaia: " + r.getFrom() + " -> " + r.getTo());
+					System.out.println("Eserlekuak: " + kop);
+					System.out.println("Prezioa: " + r.getPrice() + "€");
+					System.out.println("========================");
+
+					return true;
+				} else {
+					throw new EserlekurikLibreEzException("Ez dago nahiko eserlekurik libre");
+				}
+			} else {
+				throw new DiruaEzDaukaException("Ez dauka dirurik");
+			}
+		} else {
+			throw new ErreserbaAlreadyExistsException("Dagoeneko erreserba bat du erabiltzaile honek bidaia honetan");
+		}
+	}
+
+	public Traveler getTraveler(String email) {
+		// Asegurarse de que el EntityManager está abierto
+		if (db == null || !db.isOpen()) {
+			open();
+		}
+
+		Traveler traveler = db.find(Traveler.class, email);
+		return traveler;
+	}
+	
+	public void updateTraveler(Traveler traveler) {
 	    try {
 	        if (db == null || !db.isOpen()) {
 	            open();
 	        }
 	        
 	        db.getTransaction().begin();
-	        
-	        db.createNativeQuery("DROP TABLE IF EXISTS traveler").executeUpdate();
-	        db.createNativeQuery("DROP TABLE IF EXISTS driver_ride").executeUpdate();
-	        db.createNativeQuery("DROP TABLE IF EXISTS ride").executeUpdate();
-	        db.createNativeQuery("DROP TABLE IF EXISTS driver").executeUpdate();
-	        db.createNativeQuery("DROP TABLE IF EXISTS hibernate_sequence").executeUpdate();
-	        
+	        db.merge(traveler);
 	        db.getTransaction().commit();
 	        
-			System.out.println("=== DATU BASEA DROPEATUTA ===");
-			System.out.println("=================================");
-
+	        System.out.println("=== TRAVELER EGUNERATUTA ===");
+	        System.out.println("Email: " + traveler.getEmail());
+	        System.out.println("Dirua: " + traveler.getCash() + "€");
+	        System.out.println("===========================");
 	        
 	    } catch (Exception e) {
-	        if (db != null && db.getTransaction().isActive()) {
+	        if (db.getTransaction().isActive()) {
 	            db.getTransaction().rollback();
 	        }
-	        System.out.println("Error dropping database tables: " + e.getMessage());
+	        System.err.println("Error updating traveler: " + e.getMessage());
 	        e.printStackTrace();
 	    }
 	}
-	*/
+	
+	public List<Erreserba> getBookingsByRide(Integer rideNumber) {
+	    try {
+	        if (db == null || !db.isOpen()) {
+	            open();
+	        }
+
+	        Ride ride = db.find(Ride.class, rideNumber);
+	        if (ride != null) {
+	            // Inicializar la colección lazy
+	            List<Erreserba> erreserbak = ride.getErreserbak();
+	            erreserbak.size(); // Forzar la carga
+	            return new ArrayList<>(erreserbak);
+	        }
+	        return new ArrayList<>();
+
+	    } catch (Exception e) {
+	        System.err.println("Error getting bookings by ride: " + e.getMessage());
+	        e.printStackTrace();
+	        return new ArrayList<>();
+	    }
+	}
 }

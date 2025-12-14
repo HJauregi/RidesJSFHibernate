@@ -23,6 +23,8 @@ public class CredentialsBean implements Serializable {
 	private String loggedEmail;
 	private String loggedName;
 	private boolean loggedIsDriver;
+	private boolean loggedIsAdmin;
+
 
 	// Erabiltzaile berria erregistratu
 	public String register() {
@@ -59,38 +61,42 @@ public class CredentialsBean implements Serializable {
 		}
 	}
 
-	// Saioa hasi eta erabiltzaile mota (Driver/Traveler) itzuli
+	// Saioa hasi eta erabiltzaile mota (Driver/Traveler/Admin) itzuli
 	public String login() {
-		User user = FacadeBean.getBusinessLogic().login(email, password);
-		if (user != null) {
-			loggedEmail = user.getEmail();
-			loggedName = user.getName();
-			loggedIsDriver = (user instanceof domain.Driver);
+	    User user = FacadeBean.getBusinessLogic().login(email, password);
+	    if (user != null) {
+	        loggedEmail = user.getEmail();
+	        loggedName = user.getName();
+	        loggedIsDriver = (user instanceof domain.Driver);
+	        loggedIsAdmin = (user instanceof domain.Admin);
 
-			// Kontsolan informazioa erakutsi
-			System.out.println("=== SAIOA HASI DA ===");
-			System.out.println("Erabiltzailea: " + loggedName);
-			System.out.println("Emaila: " + loggedEmail);
-			System.out.println("Mota: " + (loggedIsDriver ? "Gidaria" : "Bidaiaria"));
-			System.out.println("=====================");
+	        // Información en consola
+	        System.out.println("=== SAIOA HASI DA ===");
+	        System.out.println("Erabiltzailea: " + loggedName);
+	        System.out.println("Emaila: " + loggedEmail);
+	        String userType = loggedIsAdmin ? "Admin" : (loggedIsDriver ? "Gidaria" : "Bidaiaria");
+	        System.out.println("Mota: " + userType);
+	        System.out.println("=====================");
 
-			email = null;
-			password = null;
+	        email = null;
+	        password = null;
 
-			if (user instanceof domain.Driver) {
-				return "driver";
-			} else {
-				return "traveler";
-			}
-		}
-		
-		// Errore mezua erakutsi
-		System.err.println("ERROREA: Email edo pasahitza okerra");
-		FacesContext.getCurrentInstance().addMessage(null,
-			new FacesMessage(FacesMessage.SEVERITY_ERROR, 
-				"Email edo pasahitza okerra", null));
-		
-		return null;
+	        if (user instanceof domain.Admin) {
+	            return "admin";
+	        } else if (user instanceof domain.Driver) {
+	            return "driver";
+	        } else {
+	            return "traveler";
+	        }
+	    }
+
+	    // Errore mezua
+	    System.err.println("ERROREA: Email edo pasahitza okerra");
+	    FacesContext.getCurrentInstance().addMessage(null,
+	        new FacesMessage(FacesMessage.SEVERITY_ERROR,
+	            "Email edo pasahitza okerra", null));
+
+	    return null;
 	}
 	
 	
@@ -144,5 +150,9 @@ public class CredentialsBean implements Serializable {
 
 	public boolean isLoggedIsDriver() {
 		return loggedIsDriver;
+	}
+	
+	public boolean isLoggedIsAdmin() {
+	    return loggedIsAdmin;
 	}
 }

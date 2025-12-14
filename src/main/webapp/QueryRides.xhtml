@@ -13,7 +13,7 @@
 <h:body>
 	<h:form id="queryForm">
 		<h3>Query Rides</h3>
-		
+
 		<table id="mainTable">
 			<tr>
 				<td id="leftCol">
@@ -48,7 +48,7 @@
 				<td id="rightCol">
 					<div style="margin-bottom: 8px;">
 						<label style="font-size: 16px; font-weight: 500;">Ride Date:</label>
-					</div> 
+					</div>
 					<p:calendar id="rideDate" value="#{queryRides.rideDate}"
 						pattern="dd/MM/yyyy" navigator="true" mode="inline"
 						timeZone="Europe/Madrid">
@@ -88,6 +88,13 @@
 					<h:outputText value="#{ride.date}">
 						<f:convertDateTime pattern="dd/MM/yyyy" timeZone="Europe/Madrid" />
 					</h:outputText>
+				</p:column>
+				<p:column headerText="Erreserbatu" style="text-align: center; width: 120px;">
+					<p:commandButton value="Erreserbatu" 
+						action="#{erreserbakBean.erreserbatu(ride)}"
+						update=":queryForm:ridesTable :queryForm:mezuak"
+						styleClass="ui-button-success"
+						icon="pi pi-check" />
 				</p:column>
 			</p:dataTable>
 		</div>

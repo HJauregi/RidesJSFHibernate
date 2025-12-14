@@ -4,10 +4,17 @@ import java.util.Date;
 import java.util.List;
 
 import domain.Ride;
+import domain.Traveler;
 import domain.User;
 import domain.Driver;
+import domain.Erreserba;
+import domain.ErreserbaData;
 import exceptions.RideMustBeLaterThanTodayException;
 import exceptions.UserAlreadyRegistered;
+import exceptions.DatuakNullException;
+import exceptions.DiruaEzDaukaException;
+import exceptions.ErreserbaAlreadyExistsException;
+import exceptions.EserlekurikLibreEzException;
 import exceptions.RideAlreadyExistException;
 
  
@@ -76,9 +83,16 @@ public interface BLFacade  {
     public void open();
     
     public void close();
+        
+    public void dropDB();
     
-    public List<Ride> getAllRides(String from);
-    
-    //public void dropDB();
-    
+    public boolean sortuErreserba(Traveler t, ErreserbaData eData) throws
+	EserlekurikLibreEzException, ErreserbaAlreadyExistsException, DiruaEzDaukaException, DatuakNullException;
+
+	public Traveler getTraveler(String currentUserEmail);    
+	
+	public void updateTraveler(Traveler traveler);
+	
+	public List<Erreserba> getBookingsByRide(Integer rideNumber);
+	
 }

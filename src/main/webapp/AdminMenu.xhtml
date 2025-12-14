@@ -9,7 +9,7 @@
 
 <f:view>
 	<h:head>
-		<title>Driver Menu</title>
+		<title>Admin Menu</title>
 		<h:outputStylesheet name="css/styles.css" />
 	</h:head>
 
@@ -18,7 +18,7 @@
 
 			<div class="panel">
 
-				<h2>Driver Menu</h2>
+				<h2>Admin Menu</h2>
 
 				<div class="user-info">
 					<p>
@@ -28,20 +28,18 @@
 				</div>
 
 				<div class="section">
-					<h:commandButton value="Create Rides" action="CreateRides" />
-				</div>
-
-				<div class="section">
-					<h:commandButton value="Query Rides" action="QueryRides" />
-				</div>
-
-				<div class="section">
-					<h:commandButton value="Ikusi Erreserbak" action="ViewBooks" />
+					<h3> Datu-basea ezabatu</h3>
+					<h:commandButton 
+						value="Drop Database" 
+						action="#{adminBean.dropDB}"
+						onclick="return confirm('Ziur zaude datu-base osoa ezabatu nahi duzula? ADI! Hau egin ondoren aplikazioa berrabiarazi beharko duzu');"
+						style="background-color: #d32f2f; border-color: #b71c1c;" />
 				</div>
 
 				<div class="button-section">
 					<h:commandButton value="Close" action="close" immediate="true" />
 				</div>
+				
 				<h:messages id="messages" style="color:red; margin-top: 15px;" />
 
 			</div>
@@ -50,4 +48,5 @@
 	</h:body>
 
 </f:view>
+
 </html>

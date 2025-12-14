@@ -14,22 +14,6 @@ https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_3_0.xsd"
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
-		<display-name>Rides.xhtml</display-name>
-		<from-view-id>/Rides.xhtml</from-view-id>
-		<navigation-case>
-			<from-outcome>hirikoBidaiak</from-outcome>
-			<to-view-id>/HirikoBidaiak.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-	<navigation-rule>
-		<display-name>HirikoBidaiak.xhtml</display-name>
-		<from-view-id>/HirikoBidaiak.xhtml</from-view-id>
-		<navigation-case>
-			<from-outcome>bidaiakErakutsi</from-outcome>
-			<to-view-id>/BidaiakErakutsi.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-	<navigation-rule>
 		<from-view-id>/Login.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>driver</from-outcome>
@@ -39,6 +23,11 @@ https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_3_0.xsd"
 		<navigation-case>
 			<from-outcome>traveler</from-outcome>
 			<to-view-id>/TravelerMenu.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>admin</from-outcome>
+			<to-view-id>/AdminMenu.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
 	</navigation-rule>
@@ -77,6 +66,10 @@ https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_3_0.xsd"
 			<from-outcome>queryRides</from-outcome>
 			<to-view-id>/QueryRides.xhtml</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>Manage Money</from-outcome>
+			<to-view-id>/ManageMoney.xhtml</to-view-id>
+		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
 		<from-view-id>*</from-view-id>
@@ -87,11 +80,27 @@ https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_3_0.xsd"
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
+		<from-view-id>*</from-view-id>
+		<navigation-case>
+			<from-outcome>traveler</from-outcome>
+			<to-view-id>/TravelerMenu.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
 		<from-view-id>/CreateRides.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>close</from-outcome>
 			<to-view-id>/DriverMenu.xhtml</to-view-id>
 			<redirect />
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<display-name>ViewBooks.xhtml</display-name>
+		<from-view-id>/ViewBooks.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>driver</from-outcome>
+			<to-view-id>/DriverMenu.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 </faces-config>
