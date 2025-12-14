@@ -30,7 +30,6 @@ public class CreateBean {
 
 	private List<String> gertaerak;
 
-	// Getters eta setters
 	public String getFrom() {
 		return from;
 	}

@@ -50,7 +50,6 @@ public class Erreserba implements Serializable {
 		return (this.ride.equals(r));
 	}
 
-	// Getters y Setters
 	public Integer getEskaeraNum() {
 		return eskaeraNum;
 	}

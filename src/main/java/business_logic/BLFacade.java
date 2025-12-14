@@ -94,5 +94,7 @@ public interface BLFacade  {
 	public void updateTraveler(Traveler traveler);
 	
 	public List<Erreserba> getBookingsByRide(Integer rideNumber);
+
+	public void updateDriver(Driver driver);
 	
 }

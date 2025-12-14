@@ -36,7 +36,7 @@ public class Driver extends User implements Serializable {
 		return super.toString() + ";" + rides;
 	}
 
-	public Ride addRide(String departing, String arriving, Date date, int nPlaces, double price) {
+	public Ride addRide(String departing, String arriving, Date date, int nPlaces, float price) {
 		Ride ride = new Ride(departing, arriving, date, nPlaces, price, this);
 		rides.add(ride);
 		return ride;

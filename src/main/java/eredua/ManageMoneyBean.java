@@ -1,6 +1,8 @@
 package eredua;
 
+import domain.Driver;
 import domain.Traveler;
+import domain.User;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -17,33 +19,30 @@ public class ManageMoneyBean implements Serializable {
     @Inject
     private CredentialsBean credentials;
 
-    private double amount;
+    private float amount;
 
-    public double getAmount() {
+    public float getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(float amount) {
         this.amount = amount;
     }
 
     public double getCurrentCash() {
         try {
-            Traveler traveler = FacadeBean.getBusinessLogic().getTraveler(credentials.getLoggedEmail());
-            if (traveler != null) {
-                return traveler.getCash();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return 0.0;
-    }
-
-    public double getFrozenMoney() {
-        try {
-            Traveler traveler = FacadeBean.getBusinessLogic().getTraveler(credentials.getLoggedEmail());
-            if (traveler != null) {
-                return traveler.getFrozenMoney();
+            String email = credentials.getLoggedEmail();
+            
+            if (credentials.isLoggedIsDriver()) {
+                Driver driver = FacadeBean.getBusinessLogic().getDriver(email);
+                if (driver != null) {
+                    return driver.getCash();
+                }
+            } else {
+                Traveler traveler = FacadeBean.getBusinessLogic().getTraveler(email);
+                if (traveler != null) {
+                    return traveler.getCash();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -52,7 +51,7 @@ public class ManageMoneyBean implements Serializable {
     }
 
     public double getTotalMoney() {
-        return getCurrentCash() + getFrozenMoney();
+        return getCurrentCash();
     }
 
     public String addMoney() {
@@ -64,29 +63,61 @@ public class ManageMoneyBean implements Serializable {
                 return null;
             }
 
-            Traveler traveler = FacadeBean.getBusinessLogic().getTraveler(credentials.getLoggedEmail());
-            
-            if (traveler != null) {
-                traveler.diruaSartu(amount);  // ← CAMBIADO A diruaSartu()
-                FacadeBean.getBusinessLogic().updateTraveler(traveler);
+            String email = credentials.getLoggedEmail();
 
-                System.out.println("=== DIRUA GEHITUTA ===");
-                System.out.println("Bidaiaria: " + traveler.getEmail());
-                System.out.println("Zenbatekoa: " + amount + "€");
-                System.out.println("Diru berria: " + traveler.getCash() + "€");
-                System.out.println("=====================");
+            if (credentials.isLoggedIsDriver()) {
+                Driver driver = FacadeBean.getBusinessLogic().getDriver(email);
+                
+                if (driver != null) {
+                    float diruaAurretik = driver.getCash();
+                    driver.setCash(diruaAurretik + amount);
+                    FacadeBean.getBusinessLogic().updateDriver(driver);
 
-                FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_INFO,
-                        amount + "€ gehitu dira zure kontura", null));
+                    System.out.println("=== DIRUA GEHITUTA (DRIVER) ===");
+                    System.out.println("Gidaria: " + driver.getEmail());
+                    System.out.println("Zenbatekoa: " + amount + "€");
+                    System.out.println("Diru zaharra: " + diruaAurretik + "€");
+                    System.out.println("Diru berria: " + driver.getCash() + "€");
+                    System.out.println("================================");
 
-                amount = 0; // Reset
-                return null; // Mantener en la misma página para ver el mensaje
+                    FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_INFO,
+                            amount + "€ gehitu dira zure kontura", null));
+
+                    amount = 0;
+                    return null;
+                } else {
+                    FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "Errorea: Gidaria ez da aurkitu", null));
+                    return null;
+                }
+                
             } else {
-                FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                        "Errorea: Erabiltzailea ez da aurkitu", null));
-                return null;
+                Traveler traveler = FacadeBean.getBusinessLogic().getTraveler(email);
+
+                if (traveler != null) {
+                    traveler.diruaSartu(amount);
+                    FacadeBean.getBusinessLogic().updateTraveler(traveler);
+
+                    System.out.println("=== DIRUA GEHITUTA (TRAVELER) ===");
+                    System.out.println("Bidaiaria: " + traveler.getEmail());
+                    System.out.println("Zenbatekoa: " + amount + "€");
+                    System.out.println("Diru berria: " + traveler.getCash() + "€");
+                    System.out.println("==================================");
+
+                    FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_INFO,
+                            amount + "€ gehitu dira zure kontura", null));
+
+                    amount = 0;
+                    return null;
+                } else {
+                    FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "Errorea: Erabiltzailea ez da aurkitu", null));
+                    return null;
+                }
             }
 
         } catch (Exception e) {
@@ -95,6 +126,14 @@ public class ManageMoneyBean implements Serializable {
                 new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Errorea dirua gehitzen: " + e.getMessage(), null));
             return null;
+        }
+    }
+    
+    public String goBack() {
+        if (credentials.isLoggedIsDriver()) {
+            return "driver";
+        } else {
+            return "traveler";
         }
     }
 }

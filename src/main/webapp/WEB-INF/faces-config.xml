@@ -66,10 +66,6 @@ https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_3_0.xsd"
 			<from-outcome>queryRides</from-outcome>
 			<to-view-id>/QueryRides.xhtml</to-view-id>
 		</navigation-case>
-		<navigation-case>
-			<from-outcome>Manage Money</from-outcome>
-			<to-view-id>/ManageMoney.xhtml</to-view-id>
-		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
 		<from-view-id>*</from-view-id>
@@ -92,6 +88,19 @@ https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_3_0.xsd"
 		<navigation-case>
 			<from-outcome>close</from-outcome>
 			<to-view-id>/DriverMenu.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<from-view-id>/ManageMoney.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>driver</from-outcome>
+			<to-view-id>/DriverMenu.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>traveler</from-outcome>
+			<to-view-id>/TravelerMenu.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
 	</navigation-rule>

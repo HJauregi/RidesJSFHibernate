@@ -14,19 +14,21 @@
 	<h:form id="queryForm">
 		<h3>Query Rides</h3>
 
-		<table id="mainTable">
+		<table id="mainTable" >
 			<tr>
 				<td id="leftCol">
 					<table class="formTable">
 						<tr>
 							<td><label for="departCity">Depart City:</label></td>
 							<td><p:selectOneMenu id="departCity"
-									value="#{queryRides.departCity}" appendTo="@(body)">
+									value="#{queryRides.departCity}">
+
 									<f:selectItem itemLabel="Select a city" itemValue=""
 										noSelectionOption="true" />
 									<f:selectItems value="#{queryRides.departCities}" />
 									<p:ajax listener="#{queryRides.onDepartCityChange}"
-										update="arrivalCity ridesTable mezuak" process="@this" />
+										update="arrivalCity ridesTable mezuak seatsInput"
+										process="@this" />
 								</p:selectOneMenu></td>
 						</tr>
 
@@ -34,34 +36,48 @@
 							<td><label for="arrivalCity">Arrival City:</label></td>
 							<td><p:selectOneMenu id="arrivalCity"
 									value="#{queryRides.arrivalCity}"
-									disabled="#{empty queryRides.departCity}" appendTo="@(body)">
+									disabled="#{queryRides.departCity == null or queryRides.departCity == ''}"
+									appendTo="@(body)">
 									<f:selectItem itemLabel="Select destination" itemValue=""
 										noSelectionOption="true" />
 									<f:selectItems value="#{queryRides.arrivalCities}" />
 									<p:ajax listener="#{queryRides.onDateSelect}"
-										update="ridesTable mezuak" process="@this" />
+										update="ridesTable mezuak seatsInput" process="@this" />
 								</p:selectOneMenu></td>
+						</tr>
+
+						<tr rendered="#{queryRides.seatsInputEnabled}">
+							<td><label for="seatsInput">Number of Seats:</label></td>
+							<td><p:inputNumber id="seatsInput"
+									value="#{queryRides.requestedSeats}" decimalPlaces="0"
+									minValue="1" placeholder="Enter seats" style="width: 100%;">
+									<p:ajax event="change" update="ridesTable mezuak"
+										process="@this" />
+								</p:inputNumber></td>
 						</tr>
 					</table>
 				</td>
 
 				<td id="rightCol">
 					<div style="margin-bottom: 8px;">
-						<label style="font-size: 16px; font-weight: 500;">Ride Date:</label>
-					</div>
-					<p:calendar id="rideDate" value="#{queryRides.rideDate}"
+						<label style="font-size: 16px; font-weight: 500;">Ride
+							Date:</label>
+					</div> <p:calendar id="rideDate" value="#{queryRides.rideDate}"
 						pattern="dd/MM/yyyy" navigator="true" mode="inline"
 						timeZone="Europe/Madrid">
 						<p:ajax event="dateSelect" listener="#{queryRides.onDateSelect}"
-							update=":queryForm:ridesTable :queryForm:mezuak" process="@this" />
+							update=":queryForm:ridesTable :queryForm:mezuak :queryForm:seatsInput"
+							process="@this" />
 					</p:calendar>
 				</td>
 			</tr>
 		</table>
 
-		<h:messages id="mezuak" style="text-align:center; margin:20px auto; color:#1a73e8; font-weight:500;" />
+		<h:messages id="mezuak"
+			style="text-align:center; margin:20px auto; color:#1a73e8; font-weight:500;" />
 
-		<div style="width: 1000px; margin: 30px auto; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); background: #fff;">
+		<div
+			style="width: 1100px; margin: 30px auto; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); background: #fff;">
 			<p:dataTable id="ridesTable" value="#{queryRides.rides}" var="ride"
 				emptyMessage="No rides available" paginator="true" rows="10"
 				style="width: 100%;">
@@ -89,12 +105,13 @@
 						<f:convertDateTime pattern="dd/MM/yyyy" timeZone="Europe/Madrid" />
 					</h:outputText>
 				</p:column>
-				<p:column headerText="Erreserbatu" style="text-align: center; width: 120px;">
-					<p:commandButton value="Erreserbatu" 
-						action="#{erreserbakBean.erreserbatu(ride)}"
+				<p:column headerText="Erreserbatu"
+					style="text-align: center; width: 120px;">
+					<p:commandButton value="Erreserbatu"
+						action="#{erreserbakBean.erreserbatu(ride, queryRides.requestedSeats)}"
 						update=":queryForm:ridesTable :queryForm:mezuak"
-						styleClass="ui-button-success"
-						icon="pi pi-check" />
+						styleClass="ui-button-success" icon="pi pi-check"
+						disabled="#{queryRides.requestedSeats == null or ride.nPlaces lt queryRides.requestedSeats}" />
 				</p:column>
 			</p:dataTable>
 		</div>

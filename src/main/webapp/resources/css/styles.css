@@ -77,7 +77,7 @@ h3 {
 }
 
 /* Inputs generales */
-input[type="text"], h\:inputText {
+input[type="text"] {
 	padding: 8px;
 	border-radius: 6px;
 	border: 1px solid #bbb;
@@ -98,11 +98,9 @@ label {
 }
 
 /* Botones */
-.section .ui-button, 
 .section input[type="submit"], 
 .section input[type="button"],
 .button-section input, 
-.button-section h\:commandButton,
 button[type="button"] {
 	font-size: 18px;
 	padding: 15px 30px;
@@ -117,11 +115,9 @@ button[type="button"] {
 	margin-top: 10px;
 }
 
-.section .ui-button:hover, 
 .section input[type="submit"]:hover, 
 .section input[type="button"]:hover,
-.button-section input:hover, 
-.button-section h\:commandButton:hover,
+.button-section input:hover,
 button[type="button"]:hover {
 	background-color: #0069d9;
 }
@@ -132,8 +128,7 @@ button[type="button"]:hover {
 	margin-bottom: 20px;
 }
 
-.button-section input, 
-.button-section h\:commandButton {
+.button-section input {
 	width: auto;
 	padding: 10px 24px;
 	margin: 0 12px;
@@ -206,4 +201,76 @@ button[type="button"]:hover {
 	margin-top: 15px;
 	color: #1a73e8;
 	font-weight: 500;
+}
+
+/* Tabla principal de formularios - CENTRADA */
+#mainTable {
+	width: 100%;
+	max-width: 1100px;
+	margin: 20px auto !important;
+	border-collapse: separate;
+	border-spacing: 30px 0;
+	table-layout: fixed;
+}
+
+#leftCol {
+	width: 400px;
+	vertical-align: top;
+	padding-right: 30px;
+}
+
+#rightCol {
+	width: 500px;
+	vertical-align: top;
+	text-align: center;
+}
+
+/* Tabla de formularios */
+.formTable {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.formTable tr {
+	height: 50px;
+}
+
+.formTable td {
+	padding: 10px 5px;
+	vertical-align: middle;
+}
+
+.formTable td:first-child {
+	width: 140px;
+	text-align: right;
+	padding-right: 15px;
+}
+
+.formTable label {
+	font-weight: 500;
+	color: #555;
+}
+
+/* PrimeFaces - selectOneMenu y otros inputs */
+.ui-selectonemenu,
+.ui-inputnumber {
+	width: 100% !important;
+	max-width: 100% !important;
+}
+
+.ui-selectonemenu .ui-selectonemenu-trigger {
+	width: 2em !important;
+}
+
+/* Calendar de PrimeFaces */
+.ui-datepicker-inline {
+	border: 1px solid #ddd !important;
+	border-radius: 8px !important;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+	background: white !important;
+}
+
+/* Panel de overlay para selectOneMenu */
+.ui-selectonemenu-panel {
+	z-index: 9999 !important;
 }

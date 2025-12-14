@@ -70,7 +70,6 @@ public class CredentialsBean implements Serializable {
 	        loggedIsDriver = (user instanceof domain.Driver);
 	        loggedIsAdmin = (user instanceof domain.Admin);
 
-	        // Información en consola
 	        System.out.println("=== SAIOA HASI DA ===");
 	        System.out.println("Erabiltzailea: " + loggedName);
 	        System.out.println("Emaila: " + loggedEmail);

@@ -136,4 +136,9 @@ public class BLFacadeImplementation implements BLFacade {
 	    dbManager.close();
 	    return bookings;
 	}
+
+	@Override
+	public void updateDriver(Driver driver) {
+		dbManager.updateDriver(driver);
+	}
 }

@@ -28,25 +28,33 @@
 				</div>
 
 				<div class="section">
-					<h3>Oraingo egoera</h3>
-					<p><strong>Diru erabilgarria:</strong> #{manageMoneyBean.currentCash} €</p>
-					<p><strong>Diru izoztua:</strong> #{manageMoneyBean.frozenMoney} €</p>
-					<p><strong>Guztira:</strong> #{manageMoneyBean.totalMoney} €</p>
+					<h3>Kartera</h3>
+					<p>
+						<strong>Karterako dirua:</strong> 
+						<h:outputText value="#{manageMoneyBean.currentCash}">
+							<f:convertNumber pattern="#0.00" />
+						</h:outputText> €
+					</p>
 				</div>
 
 				<div class="section">
 					<h3>Gehitu dirua</h3>
 					<h:outputLabel for="amount" value="Zenbatekoa (€):" />
-					<h:inputText id="amount" value="#{manageMoneyBean.amount}" 
+					<h:inputText id="amount" value="#{manageMoneyBean.amount}"
 						required="true" requiredMessage="Zenbatekoa beharrezkoa da"
 						style="margin-left: 10px; margin-right: 10px;">
 						<f:validateDoubleRange minimum="0.01" maximum="10000" />
 					</h:inputText>
-					<h:commandButton value="Gehitu" action="#{manageMoneyBean.addMoney}" />
+					<h:commandButton value="Gehitu"
+						action="#{manageMoneyBean.addMoney}"
+						styleClass="ui-button ui-button-success" />
 				</div>
 
 				<div class="button-section">
-					<h:commandButton value="Close" action="traveler" immediate="true" />
+					<h:commandButton value="Close" 
+						action="#{manageMoneyBean.goBack}" 
+						immediate="true"
+						styleClass="ui-button" />
 				</div>
 
 				<h:messages id="messages" style="color:green; margin-top: 15px;" />

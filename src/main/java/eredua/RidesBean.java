@@ -34,12 +34,6 @@ public class RidesBean {
 		return "login";
 	}
 	
-	/*
-	public void dropDB() {
-		FacadeBean.getBusinessLogic().dropDB();
-	}
-	*/
-	
 	public String hirikoBidaiak() {
 		return "hirikoBidaiak";
 	}

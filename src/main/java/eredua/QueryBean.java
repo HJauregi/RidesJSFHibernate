@@ -21,6 +21,7 @@ public class QueryBean implements Serializable {
 	private String departCity;
 	private String arrivalCity;
 	private Date rideDate;
+	private Integer requestedSeats;
 
 	private List<String> departCities;
 	private List<String> arrivalCities;
@@ -28,7 +29,6 @@ public class QueryBean implements Serializable {
 
 	private boolean searchPerformed;
 
-	// Bean hasieratzen denean irteera-hiriak kargatu
 	@PostConstruct
 	public void init() {
 		System.out.println("=== QUERYBEAN HASIERATZEN ===");
@@ -37,12 +37,12 @@ public class QueryBean implements Serializable {
 		arrivalCities = new ArrayList<>();
 		ridesList = new ArrayList<>();
 		searchPerformed = false;
+		requestedSeats = null;
 
 		try {
 			departCities = FacadeBean.getBusinessLogic().getDepartCities();
 			System.out.println("Irteera-hiriak kargatuta: " + departCities.size());
 			
-			// Debug: mostrar las ciudades
 			if (departCities != null && !departCities.isEmpty()) {
 				System.out.println("Hiriak:");
 				for (String city : departCities) {
@@ -60,7 +60,6 @@ public class QueryBean implements Serializable {
 		}
 	}
 
-	// Getters and Setters
 	public List<String> getDepartCities() {
 		if (departCities == null) {
 			departCities = new ArrayList<>();
@@ -118,6 +117,14 @@ public class QueryBean implements Serializable {
 		this.rideDate = rideDate;
 	}
 
+	public Integer getRequestedSeats() {
+		return requestedSeats;
+	}
+
+	public void setRequestedSeats(Integer requestedSeats) {
+		this.requestedSeats = requestedSeats;
+	}
+
 	public boolean isSearchPerformed() {
 		return searchPerformed;
 	}
@@ -130,6 +137,7 @@ public class QueryBean implements Serializable {
 		arrivalCity = null;
 		ridesList = new ArrayList<>();
 		searchPerformed = false;
+		requestedSeats = null;
 
 		if (departCity != null && !departCity.isEmpty()) {
 			try {
@@ -211,5 +219,11 @@ public class QueryBean implements Serializable {
 		if (rideDate == null)
 			return "";
 		return new SimpleDateFormat("MMMM dd, yyyy").format(rideDate);
+	}
+	
+	public boolean isSeatsInputEnabled() {
+	    return departCity != null && !departCity.trim().isEmpty() &&
+	           arrivalCity != null && !arrivalCity.trim().isEmpty() &&
+	           rideDate != null;
 	}
 }

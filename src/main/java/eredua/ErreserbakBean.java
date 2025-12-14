@@ -31,12 +31,11 @@ public class ErreserbakBean implements Serializable {
     private Integer selectedRideNumber;
     private List<Erreserba> bookings;
 
-    public String erreserbatu(Ride ride) {
+    public String erreserbatu(Ride ride, Integer requestedSeats) {
         BLFacade facade = FacadeBean.getBusinessLogic();
         FacesContext context = FacesContext.getCurrentInstance();
 
         try {
-            // Obtener el email del usuario logueado
             String currentUserEmail = credentials.getLoggedEmail();
 
             if (currentUserEmail == null) {
@@ -46,7 +45,6 @@ public class ErreserbakBean implements Serializable {
                 return null;
             }
 
-            // Verificar que no sea un driver
             if (credentials.isLoggedIsDriver()) {
                 context.addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_WARN,
@@ -54,11 +52,26 @@ public class ErreserbakBean implements Serializable {
                 return null;
             }
 
+            if (requestedSeats == null || requestedSeats <= 0) {
+                context.addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_WARN,
+                        "Sartu eserleku kopurua", "Mesedez, sartu erreserbatu nahi dituzun eserleku kopurua"));
+                return null;
+            }
+
+            if (requestedSeats > ride.getnPlaces()) {
+                context.addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_WARN,
+                        "Ez dago nahiko eserleku", 
+                        "Eskatutako eserlekuak (" + requestedSeats + ") gehiago dira eskuragarri daudenak baino (" + ride.getnPlaces() + ")"));
+                return null;
+            }
+
             System.out.println("=== ERRESERBA PROZESUA HASTEN ===");
             System.out.println("Erabiltzailea: " + currentUserEmail);
             System.out.println("Bidaia: " + ride.getRideNumber());
+            System.out.println("Eserleku kopurua: " + requestedSeats);
 
-            // Obtener el traveler
             Traveler traveler = facade.getTraveler(currentUserEmail);
 
             if (traveler == null) {
@@ -72,21 +85,36 @@ public class ErreserbakBean implements Serializable {
             System.out.println("Traveler aurkituta: " + traveler.getEmail());
             System.out.println("Dirua: " + traveler.getCash() + "€");
 
-            // Crear ErreserbaData
+            float prezioUnitarioa = ride.getPrice();
+            float prezioTotala = prezioUnitarioa * requestedSeats;
+
             ErreserbaData erreData = new ErreserbaData(
                 ride.getRideNumber(),
                 ride.getFrom(),
                 ride.getTo(),
-                ride.getnPlaces()
+                requestedSeats
             );
 
-            // Crear la reserva
             boolean success = facade.sortuErreserba(traveler, erreData);
 
             if (success) {
+                String mezua = String.format(
+                    "Erreserba arrakastatsua! %d eserleku erreserbatu dira %s-tik %s-ra. " +
+                    "Prezio unitarioa: %.2f€. Prezio totala: %.2f€",
+                    requestedSeats,
+                    ride.getFrom(),
+                    ride.getTo(),
+                    prezioUnitarioa,
+                    prezioTotala
+                );
+                
                 context.addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO,
-                        "Arrakasta", "Erreserba ondo sortu da!"));
+                        "Arrakasta!", mezua));
+                        
+                System.out.println("=== ERRESERBA ARRAKASTATSUA ===");
+                System.out.println(mezua);
+                System.out.println("================================");
             } else {
                 context.addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -120,7 +148,6 @@ public class ErreserbakBean implements Serializable {
         return null;
     }
 
-    // ========== MÉTODOS PARA DRIVER: VER RESERVAS ==========
 
     public Integer getSelectedRideNumber() {
         return selectedRideNumber;
@@ -184,7 +211,6 @@ public class ErreserbakBean implements Serializable {
         }
     }
 
-    // ========== GETTERS Y SETTERS ==========
 
     public CredentialsBean getCredentials() {
         return credentials;

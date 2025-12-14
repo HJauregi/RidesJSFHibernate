@@ -20,7 +20,7 @@ public class Ride implements Serializable {
 	private Date date;
 	private String departing;
 	private String arrival;
-	private double price;
+	private float price;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	private Driver driver;
@@ -32,7 +32,7 @@ public class Ride implements Serializable {
 		super();
 	}
 
-	public Ride(Integer rideNumber, String departing, String arrival, Date date, int nPlaces, double price, Driver driver) {
+	public Ride(Integer rideNumber, String departing, String arrival, Date date, int nPlaces, float price, Driver driver) {
 		super();
 		this.rideNumber = rideNumber;
 		this.departing = departing;
@@ -44,7 +44,7 @@ public class Ride implements Serializable {
 		this.eserLibre = nPlaces;
 	}
 
-	public Ride(String departing, String arrival, Date date, int nPlaces, double price, Driver driver) {
+	public Ride(String departing, String arrival, Date date, int nPlaces, float price, Driver driver) {
 		super();
 		this.departing = departing;
 		this.arrival = arrival;
@@ -55,7 +55,6 @@ public class Ride implements Serializable {
 		this.eserLibre = nPlaces;
 	}
 
-	// Getters y Setters
 	public Integer getRideNumber() {
 		return rideNumber;
 	}
@@ -104,11 +103,11 @@ public class Ride implements Serializable {
 		this.arrival = arrival;
 	}
 
-	public double getPrice() {
+	public float getPrice() {
 		return price;
 	}
 
-	public void setPrice(double price) {
+	public void setPrice(float price) {
 		this.price = price;
 	}
 
